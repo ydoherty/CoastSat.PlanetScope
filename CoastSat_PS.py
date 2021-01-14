@@ -37,7 +37,7 @@ settings = {
     # Tide csv file in MSL and UTC 
     'tide_data': 'NARRA_tides.csv',
     # Local folder planet imagery downloads location (provide full folder path)
-    'downloads_folder': '/Users/Yarran/Documents/aaa Uni/aaa old stud/Old classes/CVEN4951 - Research Thesis/Analysis/Planet Downloads/pl_storm_spz_2020',
+    'downloads_folder': '.../USER_PLANET_DOWNLOADS_FOLDER',
 
 
     ### Processing settings ###
@@ -120,7 +120,7 @@ shoreline_data = filter_shorelines(settings,
 sl_csv = compute_intersection(shoreline_data, settings)
 
 
-#%% 5) Tidal Correction
+#%% 5) Tidal Correction & filtering
 
 tide_settings = {
     # select beach slope as a generic value, or list of values corresponding to each transect
@@ -130,7 +130,11 @@ tide_settings = {
     # Tidal correction weighting
     'weighting': 1,
     # Offset correction (+ve value corrects sl seaward, ie. increases chainage)
-    'offset': 0
+    'offset': 0,
+    # Date filter (minimum)
+    'date_min':'2016-01-01',
+    # Date filter (maximum)
+    'date_max':'2021-01-01' 
     }
 
 sl_csv_tide = tidal_correction(settings, tide_settings, sl_csv)
@@ -138,6 +142,7 @@ sl_csv_tide = tidal_correction(settings, tide_settings, sl_csv)
 
 #%% 6) Plot transects
 
+# Note plot is formated for timeseries with 1+ year of data
 for transect in settings['transects_load'].keys():
     ts_plot_single(settings, sl_csv_tide, transect)
     

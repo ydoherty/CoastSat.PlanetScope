@@ -7,7 +7,7 @@ import matplotlib.ticker as ticker
 import matplotlib.dates as mdates
 import os
 
-from coastsat_pl.preprocess_tools import create_folder
+from coastsat_ps.preprocess_tools import create_folder
 
 
 #%%
@@ -68,11 +68,17 @@ def tidal_correction(settings, tide_settings, sl_csv):
     weight = tide_settings['weighting']
     contour = tide_settings['contour']
     offset = tide_settings['offset']
+    mindate = tide_settings['date_min']
+    maxdate = tide_settings['date_max']
     
     # import sl data
     sl_csv_tide = copy.deepcopy(sl_csv)
     sl_csv_tide.loc[:,'Date'] = pd.to_datetime(sl_csv_tide.loc[:,'Date'], utc = True)
     
+    # Filter by date
+    sl_csv_tide = sl_csv_tide[sl_csv_tide['Date'] > pd.to_datetime(mindate, utc = True)]
+    sl_csv_tide = sl_csv_tide[sl_csv_tide['Date'] < pd.to_datetime(maxdate, utc = True)]
+
     # Import tide daa
     tide_data = pd.read_csv(os.path.join(settings['user_input_folder'], settings['tide_data']), parse_dates=['dates'])
     dates_ts = [_.to_pydatetime() for _ in tide_data['dates']]
