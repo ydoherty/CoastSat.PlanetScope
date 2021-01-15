@@ -131,26 +131,31 @@ def ts_plot_single(settings, sl_csv, transect, savgol):
     ax.set(ylabel='Chainage [m]')
     ax.set(xlabel='Date [UTC]')      
           
-    # PL plots
-    l1 = ax.fill_between(ps_data.index, ps_data[transect], y2 = mean_ps, alpha = 0.35, color = 'grey', label='PS Data', zorder = 2)
-    #l1 = ax.scatter(ps_data.index, ps_data[transect], color = 'k', label='PS Data', marker = 'x', s = 10, linewidth = 0.5, zorder = 1)#, alpha = 0.75)
-    l1, = ax.plot(ps_data.index, ps_data[transect], linewidth = 0.75, alpha = 1, color = 'grey', label='PS Data', zorder = 3)
-
     # Mean Position line
-    l2 = ax.axhline(y = mean_ps, color='k', linewidth=0.75, label='Mean PS Position', zorder = 1)
+    l2 = ax.axhline(y = mean_ps, color='k', linewidth=0.75, label='Mean PS Position', zorder = 2)
 
-    # Interpolate to monthly rolling mean
+
     #savgol = False
     if savgol == True:
+        # PS plot
+        l1 = ax.fill_between(ps_data.index, ps_data[transect], y2 = mean_ps, alpha = 0.35, color = 'grey', label='PS Data', zorder = 3)
+        #l1 = ax.scatter(ps_data.index, ps_data[transect], color = 'k', label='PS Data', marker = 'x', s = 10, linewidth = 0.5, zorder = 1)#, alpha = 0.75)
+        l1, = ax.plot(ps_data.index, ps_data[transect], linewidth = 0.75, alpha = 0.4, color = 'k', label='PS Data', zorder = 4)
+
+        # savgol plot rolling mean
         roll_days = 15
         interp_PL = pd.DataFrame(ps_data.resample('D').mean().interpolate(method = 'linear'))
         interp_PL_sav = signal.savgol_filter(interp_PL[np.isfinite(interp_PL)][transect], roll_days, 2)
-        l3, = ax.plot(interp_PL.index, interp_PL_sav, linewidth = 0.75, alpha = 0.7, color = 'r', label=str(roll_days) + ' Day SavGol Filter', zorder = 4)
+        l3, = ax.plot(interp_PL.index, interp_PL_sav, linewidth = 0.75, alpha = 0.7, color = 'r', label=str(roll_days) + ' Day SavGol Filter', zorder = 5)
         #l3 = ax.fill_between(interp_PL.index, interp_PL[ts], y2 = mean_GT, alpha = 0.35, color = 'grey', label=str(roll_days) + ' Day SavGol Filter', zorder = 0)
     
         # Set legend
         ax.legend(handles = [l1, l2, l3], ncol = 3, bbox_to_anchor = (0,1), loc='upper left', framealpha = 1, fontsize = 'xx-small')
     else:
+        # PS plot
+        l1 = ax.fill_between(ps_data.index, ps_data[transect], y2 = mean_ps, alpha = 0.25, color = 'grey', label='PS Data', zorder = 3)
+        l1, = ax.plot(ps_data.index, ps_data[transect], linewidth = 0.75, alpha = 0.6, color = 'k', label='PS Data', zorder = 4)
+    
         # Set legend
         ax.legend(handles = [l1, l2], ncol = 3, bbox_to_anchor = (0,1), loc='upper left', framealpha = 1, fontsize = 'xx-small')
 
