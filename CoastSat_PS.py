@@ -42,9 +42,10 @@ settings = {
 
     ### Processing settings ###
     # Machine learning classifier filename (in "...CoastSat.PlanetScope/classifier/models")
+        # A new classifier may be re-trained after step 1.3. Refer "...CoastSat.PlanetScope/classifier/train_new_classifier.py" for instructions. 
     'classifier': 'NN_4classes_PS_NARRA.pkl',
     # Image co-registration choice ['Coreg Off', 'Local Coreg', 'Global Coreg']
-    'im_coreg': 'Local Coreg', # refer https://pypi.org/project/arosics/ for details
+    'im_coreg': 'Local Coreg', # refer https://pypi.org/project/arosics/ for details on Local vs Global coreg. Local recommended but slower. 
 
 
     ### Advanced settings ###
@@ -82,6 +83,9 @@ select_ref_image(settings)
 
 pre_process(settings, outputs, del_files_int = True)
 
+# Note "Failed to delete GEOS geom" error message in console during 
+    # co-registraion does not impact algorithm. Working on bug fix. 
+
 
 #%% 2.1) Select georectified/merged image for classification, reference shoreline and transects
 
@@ -93,6 +97,8 @@ add_ref_features(settings)
     # reclassify = True will reclassify images if they have been classified previously
         # useful when running again with a new classifier
         # use False to save time on re-runs with the same classifier to save processing time
+    
+# Note that output shoreline .geojson file for use in GIS software is not todally corrected
     
 shoreline_data = extract_shorelines(outputs, settings, 
                       del_index = False, reclassify = False)
