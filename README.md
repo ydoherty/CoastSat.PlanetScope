@@ -39,3 +39,13 @@ Due to the preliminary stage of testing, validation has only been completed at N
 
 Steps are provided in the file "...CoastSat.PlanetScope/coastsat_ps/classifier/train_new_classifier.py". Instructions are provided in the file and are based of the CoastSat classifier training methods [https://github.com/kvos/CoastSat/blob/master/doc/train_new_classifier.md]. 
 
+
+## **Validation Results**
+
+Accuracy validated at Narrabeen-Collaroy beach with a RMSE of 3.51m. 
+
+Detailed results and methodology outlined in:
+
+Doherty Y., Harley M.D., Vos K., Splinter K.D. (2021). Evaluation of PlanetScope Dove Satellite Imagery for High-Resolution, Near-Daily Shoreline Monitoring (in peer-review)
+
+
