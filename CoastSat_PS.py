@@ -150,8 +150,9 @@ sl_csv_tide = tidal_correction(settings, tide_settings, sl_csv)
 #%% 6) Plot transects
 
 # Note plot is formated for timeseries with 1+ year of data
+    # set savgol = True to plot 15 day moving average shoreline position
 for transect in settings['transects_load'].keys():
-    ts_plot_single(settings, sl_csv_tide, transect)
+    ts_plot_single(settings, sl_csv_tide, transect, savgol = True)
     
     
 #%% Approximate times (for ~1000 downloaded images)

@@ -28,9 +28,9 @@ Additional packages to manually install in the coastsat environment are:
 
 PlanetScope images must be manually downloaded by the user. 
 - It is recommended this be done using the QGIS Planet plugin [https://developers.planet.com/docs/integrations/qgis/quickstart/] and cropped to a user area of interest using this tool to reduce file size prior to download. 
-- To run CoastSat.PlanetScope, keep all downloaded images and associated metadata in a single folder and direct CoastSat.PlanetScope to this folder in the CoastSat_PS.py settings.
+- To run CoastSat.PlanetScope, keep all downloaded images and associated metadata in a single folder and outline this folder filepath in the CoastSat_PS.py settings.
 
-All user input files (area_of_interest_polygon.kml, transects.geojson & tide_data.csv) should be saved in the folder "...CoastSat.PlanetScope/user_inputs"
+All user input files (area of interest polygon, transects & tide data) should be saved in the folder "...CoastSat.PlanetScope/user_inputs"
 - Analysis region of interest .kml file can be selected and downloaded from [geojson.io]. 
 - Transects .geojson file (optional) should match the user input settings epsg. If skipped, transects may be drawn manually with an interactive popup. Alternately, the provided NARRA_transect.geojson file may be manually modified in a text editor to add/remove/update transect names, coordinates and epsg
 - Tide data .csv for tidal correction (optional) should be in UTC time and local mean sea level (MSL) elevation. See NARRA_tides.csv for csv data and column name formatting. 
@@ -39,6 +39,8 @@ Beach slopes for the tidal correction (step 5.) can be extracted using the Coast
 
 
 ## **Usage**
+
+![](readme_files/timeseries.png)
 
 It is recommended the toolkit be run in spyder. Ensure spyder graphics backend is set to 'automatic' for proper plot rendering. 
 - Preferences - iPython console - Graphics - Graphics Backend - Automatic
@@ -63,7 +65,7 @@ Due to the preliminary stage of testing, validation has only been completed at N
 
 Steps are provided in "...CoastSat.PlanetScope/coastsat_ps/classifier/train_new_classifier.py". 
 - Instructions are in this file and based of the CoastSat classifier training methods [https://github.com/kvos/CoastSat/blob/master/doc/train_new_classifier.md]. 
-- CoastSat.PlanetScope must be run up to/including step 1.3. on a set of images to extract co-registered and top of atmosphere corrected images for classifier training. 
+- CoastSat.PlanetScope must be run up to/including step 1.3. on a set of images to extract co-registered and top of atmosphere corrected scenes for classifier training. 
 
 
 ## **Validation Results**

@@ -48,7 +48,7 @@ def get_closest_datapoint(dates, dates_ts, values_ts):
         start = lst.index(item, start)
         return start
     for i,date in enumerate(dates):
-        print('\rExtracting closest points: %d%%' % int((i+1)*100/len(dates)), end='')
+        print('\rExtracting closest tide to PS timestamps: %d%%' % int((i+1)*100/len(dates)), end='')
         temp.append(values_ts[find(min(item for item in dates_ts if item > date), dates_ts)])
     values = np.array(temp)
     
@@ -78,6 +78,9 @@ def tidal_correction(settings, tide_settings, sl_csv):
     # Filter by date
     sl_csv_tide = sl_csv_tide[sl_csv_tide['Date'] > pd.to_datetime(mindate, utc = True)]
     sl_csv_tide = sl_csv_tide[sl_csv_tide['Date'] < pd.to_datetime(maxdate, utc = True)]
+
+    # Filter by filter
+    sl_csv_tide = sl_csv_tide[sl_csv_tide['Filter'] == 1]
 
     # Import tide daa
     tide_data = pd.read_csv(os.path.join(settings['user_input_folder'], settings['tide_data']), parse_dates=['dates'])
@@ -112,7 +115,7 @@ def tidal_correction(settings, tide_settings, sl_csv):
 
 #%% Single transect plot
 
-def ts_plot_single(settings, sl_csv, transect):
+def ts_plot_single(settings, sl_csv, transect, savgol):
     
     # import PS data and remove nan
     ps_data = copy.deepcopy(sl_csv[['Date',transect]])
@@ -122,41 +125,41 @@ def ts_plot_single(settings, sl_csv, transect):
     mean_ps = np.nanmean(ps_data[transect])
     
     # Initialise figure
-    fig = plt.figure(figsize=(8,4))
+    fig = plt.figure(figsize=(8,3))
     ax = fig.add_subplot(111)
-    ax.set_title('Transect ' + transect + ' Timeseries Plot')
+    ax.set_title(settings['site_name'] + ' Transect ' + transect + ' Timeseries Plot')
     ax.set(ylabel='Chainage [m]')
     ax.set(xlabel='Date [UTC]')      
           
     # PL plots
-    #l1 = ax.fill_between(ps_data.index, ps_data[transect], y2 = mean_GT, alpha = 0.35, color = 'grey', label='PS Data', zorder = 0)
+    l1 = ax.fill_between(ps_data.index, ps_data[transect], y2 = mean_ps, alpha = 0.35, color = 'grey', label='PS Data', zorder = 2)
     #l1 = ax.scatter(ps_data.index, ps_data[transect], color = 'k', label='PS Data', marker = 'x', s = 10, linewidth = 0.5, zorder = 1)#, alpha = 0.75)
-    l1, = ax.plot(ps_data.index, ps_data[transect], linewidth = 0.75, alpha = 1, color = 'grey', label='PS Data', zorder = 1)
+    l1, = ax.plot(ps_data.index, ps_data[transect], linewidth = 0.75, alpha = 1, color = 'grey', label='PS Data', zorder = 3)
 
     # Mean Position line
-    l2 = ax.axhline(y = mean_ps, color='k', linewidth=0.75, label='Mean PS Position')
+    l2 = ax.axhline(y = mean_ps, color='k', linewidth=0.75, label='Mean PS Position', zorder = 1)
 
-    # Interpolate to 2 week rolling mean
-    savgol = False
+    # Interpolate to monthly rolling mean
+    #savgol = False
     if savgol == True:
         roll_days = 15
         interp_PL = pd.DataFrame(ps_data.resample('D').mean().interpolate(method = 'linear'))
         interp_PL_sav = signal.savgol_filter(interp_PL[np.isfinite(interp_PL)][transect], roll_days, 2)
-        l3, = ax.plot(interp_PL.index, interp_PL_sav, linewidth = 0.75, alpha = 0.7, color = 'r', label=str(roll_days) + ' Day SavGol Filter', zorder = 2)
+        l3, = ax.plot(interp_PL.index, interp_PL_sav, linewidth = 0.75, alpha = 0.7, color = 'r', label=str(roll_days) + ' Day SavGol Filter', zorder = 4)
         #l3 = ax.fill_between(interp_PL.index, interp_PL[ts], y2 = mean_GT, alpha = 0.35, color = 'grey', label=str(roll_days) + ' Day SavGol Filter', zorder = 0)
     
         # Set legend
-        ax.legend(handles = [l1, l2, l3], ncol = 3, bbox_to_anchor = (1,1), loc='upper right', framealpha = 1, fontsize = 'xx-small')
+        ax.legend(handles = [l1, l2, l3], ncol = 3, bbox_to_anchor = (0,1), loc='upper left', framealpha = 1, fontsize = 'xx-small')
     else:
         # Set legend
-        ax.legend(handles = [l1, l2], ncol = 3, bbox_to_anchor = (1,1), loc='upper right', framealpha = 1, fontsize = 'xx-small')
+        ax.legend(handles = [l1, l2], ncol = 3, bbox_to_anchor = (0,1), loc='upper left', framealpha = 1, fontsize = 'xx-small')
 
     
     # Find axis bounds
-    if abs(max(ps_data[transect])) > abs(min(ps_data[transect])):
+    if abs(max(ps_data[transect]))-mean_ps > mean_ps-abs(min(ps_data[transect])):
         bound = abs(max(ps_data[transect]))-mean_ps+5
     else:
-        bound = abs(min(ps_data[transect]))-mean_ps+5
+        bound = mean_ps-abs(min(ps_data[transect]))+5
     
     # Set axis limits
     ax.set_ylim(top = mean_ps + bound)

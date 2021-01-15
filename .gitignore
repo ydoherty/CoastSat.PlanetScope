@@ -9,6 +9,7 @@ __pycache__/
 
 *.png
 !extraction.png
+!timeseries.png
 
 *.pkl
 !NN_4classes_PS_NARRA.pkl
