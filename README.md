@@ -4,13 +4,12 @@ Yarran Doherty, UNSW Water Research Laboratory, 01/2021
 
 ## **Description**
 
-CoastSat.PlanetScope is an open-source extension to the python toolkit CoastSat enabling users to extract time-series of shoreline psition from PlanetScope Dove satellite imagery. Similar to CoastSat, the CoastSat.PlanetScope extension utilises a machine learning shoreline detection algorithm to classify images into sand, water, whitewater and other pixel classes prior to a sub-pixel shoreline extraction process. An additional co-registration step is implemented to minimise the impact of geo-location errors. Transect intersection and a tidal correction  based on a generic beach slope is then applied to provide a time-series of shoreline position. 
+CoastSat.PlanetScope is an open-source extension to the python toolkit CoastSat enabling users to extract time-series of shoreline position from PlanetScope Dove satellite imagery. Similar to CoastSat, the CoastSat.PlanetScope extension utilises a machine-learning shoreline detection algorithm to classify images into sand, water, whitewater and other pixel classes prior to a sub-pixel shoreline extraction process. An additional co-registration step is implemented to minimise the impact of geo-location errors. Transect intersection and a tidal correction  based on a generic beach slope is then applied to provide a time-series of shoreline position. 
 
 ![](readme_files/extraction.png)
 
 Output files include:
 - Shoreline timeseries .geojson file for use in GIS software
-- Timeseries of raw transect intersection data in csv format
 - Tidally corrected shoreline transect time-series csv
 - Transect timeseries plots
 
@@ -37,12 +36,12 @@ Beach slopes for the tidal correction can be extracted using the CoastSat.Slope 
 
 Due to the preliminary stage of testing, validation has only been completed at Narrabeen-Collaroy beach in the Northern beaches of Sydney, Australia. As such, the NN classifier is optimised for this site and may perform poorly at sites with differing sediment composition. It is recommended a new classifier be trained for such sites. 
 
-Steps are provided in the file "...CoastSat.PlanetScope/coastsat_ps/classifier/train_new_classifier.py". Instructions are provided in the file and are based of the CoastSat classifier training methods [https://github.com/kvos/CoastSat/blob/master/doc/train_new_classifier.md]. 
+Steps are provided in "...CoastSat.PlanetScope/coastsat_ps/classifier/train_new_classifier.py". Instructions are provided in the file and are based of the CoastSat classifier training methods [https://github.com/kvos/CoastSat/blob/master/doc/train_new_classifier.md]. 
 
 
 ## **Validation Results**
 
-Accuracy validated at Narrabeen-Collaroy beach with a RMSE of 3.51m. 
+Accuracy validated againg in-situ RTK-GPS survey data at Narrabeen-Collaroy beach with a RMSE of 3.51m. 
 
 Detailed results and methodology outlined in:
 
