@@ -28,6 +28,8 @@ It is recommended the toolkit be run in spyder. Ensure spyder graphics backend i
 
 CoastSat.PlanetScope is run from the CoastSat_PS.py file. Instructions and comments are provided in this file for each step. It is recommended steps be run as individual cells for first time users. 
 
+PlanetScope images need to be manually downloaded by the user. It is recommended this be done using the QGIS Planet plugin and cropped to a user area of interest to reduce file size prior to download. To run CoastSat.PlanetScope, keep all downloaded images and associated metadata in a single folder and direct CoastSat.PlanetScope to this folder in the CoastSat_PS.py settings.
+
 Settings and interactive steps are based on the CoastSat workflow and will be familiar to users of CoastSat. 
 
 Beach slopes for the tidal correction can be extracted using the CoastSat.Slope toolkit [https://github.com/kvos/CoastSat.slope]
