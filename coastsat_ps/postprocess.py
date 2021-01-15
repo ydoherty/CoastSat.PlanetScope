@@ -115,7 +115,7 @@ def tidal_correction(settings, tide_settings, sl_csv):
 
 #%% Single transect plot
 
-def ts_plot_single(settings, sl_csv, transect, savgol):
+def ts_plot_single(settings, sl_csv, transect, savgol, x_scale):
     
     # import PS data and remove nan
     ps_data = copy.deepcopy(sl_csv[['Date',transect]])
@@ -134,9 +134,14 @@ def ts_plot_single(settings, sl_csv, transect, savgol):
     # Mean Position line
     l2 = ax.axhline(y = mean_ps, color='k', linewidth=0.75, label='Mean PS Position', zorder = 2)
 
+    # Number of days
+    no_days = (max(ps_data.index)-min(ps_data.index)).days
 
     #savgol = False
     if savgol == True:
+        if no_days < 16:
+            raise Exception('SavGol filter requires >15 days in timeseries')
+        
         # PS plot
         l1 = ax.fill_between(ps_data.index, ps_data[transect], y2 = mean_ps, alpha = 0.35, color = 'grey', label='PS Data', zorder = 3)
         #l1 = ax.scatter(ps_data.index, ps_data[transect], color = 'k', label='PS Data', marker = 'x', s = 10, linewidth = 0.5, zorder = 1)#, alpha = 0.75)
@@ -179,15 +184,34 @@ def ts_plot_single(settings, sl_csv, transect, savgol):
     ax.tick_params(labelbottom=False, bottom = False)
     ax.tick_params(axis = 'y', which = 'major', labelsize = 6)
         
-    ax.xaxis.set_major_locator(mdates.YearLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-
-    #ax.xaxis.set_major_locator(mdates.MonthLocator())
-    #ax.xaxis.set_major_formatter(mdates.DateFormatter('%m'))
-
-    #ax.set_yticklabels([])
-    ax.tick_params(labelbottom=True, bottom = True) 
-    ax.xaxis.set_minor_locator(mdates.MonthLocator())
+    if x_scale == 'years':
+        ax.xaxis.set_major_locator(mdates.YearLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+        #ax.set_yticklabels([])
+        ax.tick_params(labelbottom=True, bottom = True) 
+        ax.xaxis.set_minor_locator(mdates.MonthLocator())
+    elif x_scale == 'months':
+        if no_days > 100:
+            raise Exception('Too many dates to render months properly, try x_ticks = years')
+        else:
+            ax.xaxis.set_major_locator(mdates.MonthLocator())
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+            ax.tick_params(labelbottom=True, bottom = True) 
+            ax.xaxis.set_minor_locator(mdates.DayLocator())
+    elif x_scale == 'days':
+        if no_days > 100:
+            raise Exception('Too many dates to render days properly, try x_ticks = years')
+        elif no_days > 60:
+            raise Exception('Too many dates to render days properly, try x_ticks = months')
+        else:
+            ax.xaxis.set_major_locator(mdates.MonthLocator())
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+            ax.tick_params(labelbottom=True, bottom = True) 
+            ax.xaxis.set_minor_locator(mdates.DayLocator())
+            ax.xaxis.set_minor_formatter(mdates.DateFormatter('%d'))
+    else:
+        raise Exception('Select either years, months or days for x_scale input')
+      
 
     # save plot
     save_folder = os.path.join(settings['sl_thresh_ind'], 'Timeseries Plots')
