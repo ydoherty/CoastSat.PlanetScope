@@ -3,11 +3,12 @@ __pycache__/
 *checkpoint.ipynb
 
 *.tif
-*.png
-
 *.txt
 *.html
 *.xml
+
+*.png
+!extraction.png
 
 *.pkl
 !NN_4classes_PS_NARRA.pkl

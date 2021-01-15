@@ -124,6 +124,7 @@ sl_csv = compute_intersection(shoreline_data, settings)
 
 tide_settings = {
     # select beach slope as a generic value, or list of values corresponding to each transect
+        # Transect specific beach slope values can be extracted with the CoastSat beach slope tool https://github.com/kvos/CoastSat.slope
     'beach_slope': [0.085, 0.075, 0.08, 0.08, 0.1], #0.1
     # Reference elevation contour
     'contour': 0.7,
