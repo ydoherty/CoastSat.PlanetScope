@@ -79,9 +79,10 @@ select_ref_image(settings)
   
 
 #%% 1.3) Pre-Processing - image coregistration and scene merging
-    # del_files_int = True will delete intermediate coregistration files to save space
 
-pre_process(settings, outputs, del_files_int = True)
+pre_process(settings, outputs, 
+        # del_files_int = True will delete intermediate coregistration files to save space
+        del_files_int = True)
 
 # Note "Failed to delete GEOS geom" error message in console during 
     # co-registraion does not impact algorithm. Working on bug fix. 
@@ -93,32 +94,38 @@ add_ref_features(settings)
 
 
 #%% 2.2) Extract shoreline data
-    # del_index = True will delete water index .tif files once used to save space
-    # reclassify = True will reclassify images if they have been classified previously
-        # useful when running again with a new classifier
-        # use False to save time on re-runs with the same classifier to save processing time
     
 # Note that output shoreline .geojson file for use in GIS software is not todally corrected
     
 shoreline_data = extract_shorelines(outputs, settings, 
-                      del_index = False, reclassify = False)
+                                    
+        # del_index = True will delete water index .tif files once used to save space
+        del_index = False, 
+        
+        # reclassify = True will reclassify images if they have been classified previously
+            # useful when running again with a new classifier
+            # use False to save time on re-runs with the same classifier to save processing time
+        reclassify = False)
  
 
 #%% 3) Manual error detection
+
     # Option 1:
         # manual_filter & load_csv = False
             # All images pass, creates a csv in the outputs folder
                 # "...CoastSat.PlanetScope/outputs/SITE/shoreline outputs/COREG/NmB/Peak Fraction/shoreline_filter.csv"
+
     # Option 2:
         # manual_filter = True & load_csv = False    
             # popup window to keep or discard images (saves choices as a csv)
+
     # Option 3:
         # manual_filter = False & load_csv = True
             # loads and applies the csv saved from option 1 or 2
             # This file can be manually updated if desired with a text editor
          
 shoreline_data = filter_shorelines(settings,
-                    manual_filter = True, load_csv = False)
+        manual_filter = True, load_csv = False)
 
 
 #%% 4) Shoreline transect intersction and csv export
@@ -132,12 +139,14 @@ tide_settings = {
     # select beach slope as a generic value, or list of values corresponding to each transect
         # Transect specific beach slope values can be extracted with the CoastSat beach slope tool https://github.com/kvos/CoastSat.slope
     'beach_slope': [0.085, 0.075, 0.08, 0.08, 0.1], #0.1
+    
     # Reference elevation contour
     'contour': 0.7,
     # Tidal correction weighting
     'weighting': 1,
     # Offset correction (+ve value corrects sl seaward, ie. increases chainage)
     'offset': 0,
+    
     # Date filter (minimum)
     'date_min':'2016-01-01',
     # Date filter (maximum)
@@ -151,13 +160,15 @@ sl_csv_tide = tidal_correction(settings, tide_settings, sl_csv)
     
 for transect in settings['transects_load'].keys():
     ts_plot_single(settings, sl_csv_tide, transect, 
+                   
         # set savgol = True to plot 15 day moving average shoreline position
         # Requires > 15 day shorleine timeseries range
         savgol = True,
+        
         # set x_scale for x-axis labels ['days', 'months', 'years']
         x_scale = 'years')
     
-    
+  
 #%% Approximate times (for ~1000 downloaded images)
     # 1.1) 20min
     # 1.3) 2.5h coregistration, 35min merge
