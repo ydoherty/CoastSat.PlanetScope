@@ -60,7 +60,7 @@ filepath_models = create_folder(os.path.join(os.getcwd(), 'models'))
      
 sitename = 'NARRA'
 
-filepath_images = ('/Users/Yarran/Documents/GitHub/CoastSat.PlanetScope/outputs/NARRA/toa_image_data/merged_data/local_coreg_merged')
+filepath_images = ('...CoastSat.PlanetScope/outputs/NARRA/toa_image_data/merged_data/local_coreg_merged')
 
 epsg = 28356
 

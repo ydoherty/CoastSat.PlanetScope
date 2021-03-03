@@ -3,6 +3,7 @@ __pycache__/
 *checkpoint.ipynb
 
 *.tif
+*.jpg
 *.txt
 *.html
 *.xml
