@@ -12,31 +12,32 @@ CoastSat.PlanetScope is an open-source extension to the CoastSat python toolkit 
 Output files include:
 - Shoreline timeseries .geojson file for use in GIS software (no tidal correction)
 - Tidally corrected shoreline transect intersection timeseries csv
+- Image shoreline extraction plots
 - Tidally corrected transect timeseries plots
 
 
 ## **Installation**
 
-For users of Coastsat, the CoastSat.PlanetScope toolkit should run in the original CoastSat environment once the following packages are installed:
+For users of Coastsat, the CoastSat.PlanetScope toolkit may be run in the original CoastSat environment once the following packages are installed:
 - [Rasterio](https://rasterio.readthedocs.io/en/latest/installation.html)
 - [AROSICS](https://danschef.git-pages.gfz-potsdam.de/arosics/doc/installation.html)
 
-For first time users or where package conflict issues arise, a coastsat_ps environment may be installed using the provided environment.yml file. Refer section 1.1. of the [CoastSat](https://github.com/kvos/CoastSat) readme for installation instructions. The following code should be used in place of that outlined by coastsat:
+For first time users or where rasterio/arosics installation issues arise, a coastsat_ps environment may be installed using the provided environment.yml file. Refer section 1.1. of the [CoastSat](https://github.com/kvos/CoastSat) readme for installation instructions. The following code should be used in place of that outlined in the coastsat instructions:
 ```
-conda env create -f environment.yml -n coastsat
+conda env create -f environment.yml -n coastsat_ps
 
-conda activate coastsat
+conda activate coastsat_ps
 ``` 
 
 
 ## **Data Requirements**
 
 PlanetScope images must be manually downloaded by the user. 
-- It is recommended this be done using the [QGIS Planet plugin](https://developers.planet.com/docs/integrations/qgis/quickstart/) and cropped to a user area of interest using this tool to reduce file size prior to download. 
+- It is recommended this be done using the [QGIS Planet plugin](https://developers.planet.com/docs/integrations/qgis/quickstart/) which enables users to crop images to a user defined area of interest prior to download to reduce image file. 
 - To run CoastSat.PlanetScope, keep all downloaded images and associated metadata in a single folder and outline this folder filepath in the CoastSat_PS.py settings.
 
 All user input files (area of interest polygon, transects & tide data) should be saved in the folder "...CoastSat.PlanetScope/user_inputs"
-- Analysis region of interest .kml file can be selected and downloaded from [here](geojson.io). 
+- Analysis region of interest .kml file may be selected and downloaded using [this](http://geojson.io) tool. 
 - Transects .geojson file (optional) should match the user input settings epsg. If skipped, transects may be drawn manually with an interactive popup. Alternately, the provided NARRA_transect.geojson file may be manually modified in a text editor to add/remove/update transect names, coordinates and epsg
 - Tide data .csv for tidal correction (optional) should be in UTC time and local mean sea level (MSL) elevation. See NARRA_tides.csv for csv data and column name formatting. 
 

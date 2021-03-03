@@ -1,9 +1,5 @@
 # CoastSat for PlanetScope Dove Imagery
 
-# Note CoastSat environment lacks the following modules:
-    # Rasterio
-    # AROSICS and dependent modules (see website)
-
 # load coastsat modules
 from coastsat_ps.data_import import initialise_settings
 from coastsat_ps.extract_shoreline import extract_shorelines, compute_intersection
