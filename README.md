@@ -35,6 +35,7 @@ Note that the CoastSat.PlanetScope repo was written on a mac. Issues regarding e
 
 PlanetScope images must be manually downloaded by the user. 
 - It is recommended this be done using the [QGIS Planet plugin](https://developers.planet.com/docs/integrations/qgis/quickstart/) which enables users to crop images to a user defined area of interest prior to download to reduce image file size. 
+- Access to Planet imagery can be obtained through a [free trial](https://www.planet.com/trial/), [research license](https://www.planet.com/markets/education-and-research/) or [paid subscription](https://www.planet.com/contact-sales/#contact-sales)
 - To run CoastSat.PlanetScope, keep all downloaded images and associated metadata in a single folder and outline this folder filepath in the CoastSat_PS.py settings.
 
 All user input files (area of interest polygon, transects & tide data) should be saved in the folder "...CoastSat.PlanetScope/user_inputs"
