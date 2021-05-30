@@ -157,11 +157,13 @@ def zero_to_nan(im_path, nan_path, faulty_pixels = True, write = True):
 
 #%% GDAL subprocesses
 
-def gdal_subprocess(gdal_command_in, command_list):
+def gdal_subprocess(settings, gdal_command_in, command_list):
     ''' Python access to all GDAL commands
         
     Inputs:
-        
+    
+    settings - CoastSat.PlanetScope settings dictionary
+
     gdal_command_in -   name of command (may be an executable or .py file)
                             .py extension must be provided if present
                             
@@ -182,7 +184,9 @@ def gdal_subprocess(gdal_command_in, command_list):
     
     '''
     
-    gdal_loc = [os.path.join('/anaconda2/envs/coastsat/bin/', gdal_command_in)]
+    #gdal_loc = [os.path.join('/anaconda2/envs/coastsat/bin/', gdal_command_in)] #removed 30/5/2021
+    gdal_loc = [os.path.join(settings['GDAL_location'], gdal_command_in)]
+    
     gdal_command = gdal_loc + command_list
     gdal_output = subprocess.check_call(gdal_command)
     if gdal_output != 0:
@@ -218,7 +222,7 @@ def merge_crop(settings, files_list, file_out_name, epsg_in = False, nan_mask = 
     command_list = command_list + files_list + filepath_out
 
     # run proces (seconds)
-    gdal_subprocess('gdalwarp', command_list)
+    gdal_subprocess(settings, 'gdalwarp', command_list)
     
     
 #%% Georectification functions using AROSICS

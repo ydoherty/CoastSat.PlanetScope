@@ -442,7 +442,7 @@ def single_mask_coreg(settings,
         if get_raster_bounds(im_target) != get_raster_bounds(settings['land_mask']):
             # Create new cropped mask
             bounds = get_raster_bounds(im_target)
-            gdal_subprocess('gdal_translate', ['-projwin', str(bounds[0]), str(bounds[1]), str(bounds[2]), str(bounds[3]), 
+            gdal_subprocess(settings, 'gdal_translate', ['-projwin', str(bounds[0]), str(bounds[1]), str(bounds[2]), str(bounds[3]), 
                                                '-of', 'GTiff', 
                                                settings['land_mask'], tgt_mask_temp])
             land_load = tgt_mask_temp

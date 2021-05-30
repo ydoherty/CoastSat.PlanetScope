@@ -37,6 +37,8 @@ PlanetScope images must be manually downloaded by the user.
 - It is recommended this be done using the [QGIS Planet plugin](https://developers.planet.com/docs/integrations/qgis/quickstart/) which enables users to crop images to a user defined area of interest prior to download to reduce image file size. 
 - Access to PlanetScope imagery can be obtained through a [free trial](https://www.planet.com/trial/), [research license](https://www.planet.com/markets/education-and-research/) or [paid subscription](https://www.planet.com/contact-sales/#contact-sales).
 - To run CoastSat.PlanetScope, keep all downloaded images and associated metadata in a single folder and outline this folder filepath in the CoastSat_PS.py settings.
+- Required PlanetScope file type is 4-band multispectral Analytic Ortho scene. These files should contain DN values and not TOA as explained [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-850956921).
+- As outlined [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-828644872), downloaded udm2 files are not yet supported and may cause issues. These files should be deleted (manually or batch removed in python) prior to running CoastSat.PlanetScope. 
 
 All user input files (area of interest polygon, transects & tide data) should be saved in the folder "...CoastSat.PlanetScope/user_inputs"
 - Analysis region of interest .kml file may be selected and downloaded using [this tool](http://geojson.io). 
@@ -67,6 +69,14 @@ Interactive popup window steps include:
 - Manual error detection (optional - keep/discard popup window as per CoastSat) - [step 3.]
 
 Results and plots are saved in '...CoastSat.PlanetScope/outputs/site_name/shoreline outputs'. 
+
+
+## **Known Issues**
+
+The following issues have been identified by users and workarounds are presented below. My availability to maintain and update this repo is limited so user feedback, bug fixes and devlopments are encouraged! 
+- Inability to select reference image - comment out [this](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-828644872) section of code. See [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-840894375) for explanation. 
+- Environment and GDAL installation issues - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-830543064)
+- Working folder name incorrect for code to run for windows users - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/3#issue-890303529) 
 
 
 ## **Training Neural-Network Classifier**
