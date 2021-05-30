@@ -96,7 +96,7 @@ Steps are provided in "...CoastSat.PlanetScope/coastsat_ps/classifier/train_new_
 
 Detailed results and methodology outlined in:
 
-Doherty Y., Harley M.D., Vos K., Splinter K.D. (2021). Evaluation of PlanetScope Dove Satellite Imagery for High-Resolution, Near-Daily Shoreline Monitoring (in peer-review). 
-	- Pre-print hopefully available in mid June 2021
+Doherty Y., Harley M.D., Vos K., Splinter K.D. (2021). Evaluation of PlanetScope Dove Satellite Imagery for High-Resolution, Near-Daily Shoreline Monitoring (in peer-review).
+- Pre-print hopefully available in mid June 2021
 
 
