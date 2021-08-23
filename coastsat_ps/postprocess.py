@@ -6,7 +6,7 @@ import copy
 import matplotlib.ticker as ticker
 import matplotlib.dates as mdates
 import os
-
+import pdb
 from coastsat_ps.preprocess_tools import create_folder
 
 
@@ -85,7 +85,7 @@ def tidal_correction(settings, tide_settings, sl_csv):
     # Import tide daa
     tide_data = pd.read_csv(os.path.join(settings['user_input_folder'], settings['tide_data']), parse_dates=['dates'])
     dates_ts = [_.to_pydatetime() for _ in tide_data['dates']]
-    tides_ts = np.array(tide_data['tide'])
+    tides_ts = np.array(tide_data['tides'])
     
     # get tide levels corresponding to the time of image acquisition
     dates_sat = sl_csv_tide['Date'].to_list()

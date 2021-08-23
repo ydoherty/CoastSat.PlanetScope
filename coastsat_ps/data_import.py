@@ -9,7 +9,7 @@ from sklearn.externals import joblib
 
 from coastsat_ps.preprocess_tools import create_folder
 from coastsat_ps.interactive import transects_from_geojson
-
+import pdb
 
 #%% Pre-Processing Functions
 
@@ -68,8 +68,8 @@ def initialise_settings(settings):
     ##########################################################################
     
     # Check filepath is good
-    if ' ' in os.getcwd():
-        raise Exception('Ensure no whitespace in filepath to CoastSat.PlanetScope folder (gdal error)')
+    # if ' ' in os.getcwd():
+    #     raise Exception('Ensure no whitespace in filepath to CoastSat.PlanetScope folder (gdal error)')
 
     # Ensure working directory is coastsat
     if os.getcwd()[-20:] != 'CoastSat.PlanetScope':
