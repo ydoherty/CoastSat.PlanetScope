@@ -70,7 +70,11 @@ def initialise_settings(settings):
     # Check filepath is good
     if ' ' in os.getcwd():
         raise Exception('Ensure no whitespace in filepath to CoastSat.PlanetScope folder (gdal error)')
-
+    
+    # Ensure GDAL directory exists
+    if os.path.isdir(settings['GDAL_location']) == False:
+        raise Exception('Ensure GDAL location entered is correct')
+        
     # Ensure working directory is coastsat
     if os.getcwd()[-20:] != 'CoastSat.PlanetScope':
         raise Exception('Change working directory to CoastSat.PlanetScope')
