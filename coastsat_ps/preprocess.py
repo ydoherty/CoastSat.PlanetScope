@@ -22,7 +22,6 @@ from coastsat_ps.preprocess_tools import (save_mask, TOA_conversion, merge_crop,
                                           zero_to_nan, load_udm, create_land_mask)
 import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
-import pdb
 
 #%% Suppress outputs from a function
 
@@ -702,6 +701,7 @@ def merge_raw_files(settings_dict, output_dict, print_merge_summary = False, cor
                 for index_match in range(len(output_dict[merge_folder][folder][data_type]['filepaths'])):
                     if files_dict[data_type]['filepaths'][0] == output_dict[merge_folder][folder][data_type]['filepaths'][index_match]:
                         epsg_in = 'EPSG:' + str(output_dict[merge_folder][folder]['TOA.tif']['epsg'][index_match])
+                    
                 merge_crop(settings_dict, files_dict[data_type]['filepaths'], name, nan_mask = nan_mask_bool, epsg_in = epsg_in)
                 epsg_in = 0
                 
@@ -758,7 +758,7 @@ def filter_aoi_cloud(settings, del_no_pass = False, print_no_pass = False):
     for file in os.listdir(folder):
         if file.endswith('TOA.tif'):
             no_image += 1
-    
+        
     # Create list of file ids passing cloud criteria (excludes other files in mapping and later use)
     cloud_pass_id = []
     for file in os.listdir(folder):
@@ -789,6 +789,7 @@ def filter_aoi_cloud(settings, del_no_pass = False, print_no_pass = False):
                 
             # Calculate cloud percentage
             cloud_perc = get_cloud_percentage_nan_cloud(nan_path, cloud_path)
+                        
             # calculate area extent
             image_extent = get_file_extent(nan_path)
               
@@ -831,6 +832,7 @@ def map_merge(settings, outputs, del_no_pass = False, print_no_pass = False):
     # initialise
     map_dict = {}
     folder = settings['merge_out']
+    
     # Remove merged images where nan mask in cropped aoi is all true
     rem_list = []
     for file in os.listdir(folder):

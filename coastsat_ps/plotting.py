@@ -70,9 +70,10 @@ def initialise_plot(settings, im_name, index):
                         bottom=0.07, top=0.89, 
                         left=0.1, right=0.9)
         
-        ax1 = fig.add_subplot(gs[0:10,:])
-        ax2 = fig.add_subplot(gs[10:20,:], sharex=ax1, sharey=ax1)
-        ax3 = fig.add_subplot(gs[20:30,:], sharex=ax1, sharey=ax1)
+        ax1 = fig.add_subplot(gs[0:10,0:7])
+        ax2 = fig.add_subplot(gs[10:20,0:7], sharex=ax1, sharey=ax1)
+        ax3 = fig.add_subplot(gs[20:30,0:7], sharex=ax1, sharey=ax1)
+        ax4 = fig.add_subplot(gs[1:29,8:])
 
     # Set title from im_name
     fig.suptitle(settings['water_index'] + ' Water Index with ' +  
@@ -80,7 +81,7 @@ def initialise_plot(settings, im_name, index):
                  im_name, 
                  fontsize = 12)
 
-    return fig, ax1, ax2, ax3
+    return fig, ax1, ax2, ax3, ax4
 
 
 def initialise_plot_gen(settings, im_name, index):
@@ -109,14 +110,14 @@ def initialise_plot_gen(settings, im_name, index):
         
     else:
         # horizontal subplots
-        gs = gridspec.GridSpec(nrows = 4, ncols = 1, 
-                               hspace = 0.2,
-                               bottom=0.03, top=0.97, 
-                               left=0.03, right=0.97)
+        gs = gridspec.GridSpec(nrows = 30, ncols = 10,
+                        wspace = 0, hspace = 0.15,
+                        bottom=0.07, top=0.89, 
+                        left=0.1, right=0.9)
         
-        ax1 = fig.add_subplot(gs[0,0])
-        ax2 = fig.add_subplot(gs[2,0], sharex=ax1, sharey=ax1)
-        ax3 = fig.add_subplot(gs[3,0])
+        ax1 = fig.add_subplot(gs[0:15,0:7])
+        ax2 = fig.add_subplot(gs[15:30,0:7], sharex=ax1, sharey=ax1)
+        ax3 = fig.add_subplot(gs[1:29,8:])
 
     # Set title from im_name
     fig.suptitle(settings['water_index'] + ' Water Index with ' +  
@@ -141,20 +142,20 @@ def rgb_plot(ax, im_RGB, sl_pix, transects):
     ax.plot(sl_pix[:,0], sl_pix[:,1], 'k.', markersize = 0.3)     
 
     # Plot transects
-    # for pf in transects.keys():
-    #     points = transects[pf]
-    #     ax.plot(points[:,0], points[:,1], color = 'k', linestyle = ':')
+    for pf in transects.keys():
+        points = transects[pf]
+        ax.plot(points[:,0], points[:,1], color = 'k', linestyle = ':')
         
-    #     # Decide text layout
-    #     if points[0,0] > points[1,0]:
-    #         ha = 'right'
-    #         text = pf + ' '
-    #     else:
-    #         ha = 'left'
-    #         text = ' ' + pf
+        # Decide text layout
+        if points[0,0] > points[1,0]:
+            ha = 'right'
+            text = pf + ' '
+        else:
+            ha = 'left'
+            text = ' ' + pf
 
-    #     ax.text(points[1,0], points[1,1], text, fontsize = 8, color = 'white', 
-    #             ha = ha, va = 'center')
+        ax.text(points[1,0], points[1,1], text, fontsize = 8, color = 'white', 
+                ha = ha, va = 'center')
 
     # Figure settings
     ax.axis('off')
@@ -194,8 +195,8 @@ def class_plot(ax, im_RGB, im_classif, sl_pix, transects, settings, colours):
     ax.plot(sl_pix[:,0], sl_pix[:,1], 'k.', markersize = 0.3)     
     
     # Plot transects
-    # for pf in transects.values():
-    #     ax.plot(pf[:,0], pf[:,1], color = 'k', linestyle = ':')  
+    for pf in transects.values():
+        ax.plot(pf[:,0], pf[:,1], color = 'k', linestyle = ':')  
         
     # Plot colours
     orange_patch = mpatches.Patch(color=colours[0,:], label='sand')
@@ -206,10 +207,10 @@ def class_plot(ax, im_RGB, im_classif, sl_pix, transects, settings, colours):
     red_line = mlines.Line2D([],[],color='k',linestyle=':', label='transects')
     
     # Add legend
-    # ax.legend(handles=[orange_patch, white_patch, blue_patch, black_patch, 
-    #                    black_line, red_line],
-    #             bbox_to_anchor=(0.5, 0), loc='upper center', fontsize=9,
-    #             ncol = 6)
+    ax.legend(handles=[orange_patch, white_patch, blue_patch, black_patch, 
+                       black_line, red_line],
+                bbox_to_anchor=(0.5, 0), loc='upper center', fontsize=9,
+                ncol = 6)
     
     # General settings
     ax.axis('off')    
@@ -243,12 +244,12 @@ def index_plot(ax, index_in, t_otsu, comb_mask, sl_pix, transects, fig, settings
     ax.plot(sl_pix[:,0], sl_pix[:,1], 'k.', markersize = 0.3)     
 
     # Plot transects
-    # for pf in transects.values():
-    #     ax.plot(pf[:,0], pf[:,1], color = 'k', linestyle = ':')
+    for pf in transects.values():
+        ax.plot(pf[:,0], pf[:,1], color = 'k', linestyle = ':')
                 
     # Add colourbar
-    # cbar = fig.colorbar(cax, ax = ax, orientation='vertical', shrink=0.65)
-    # cbar.set_label(settings['water_index'] + ' Pixel Value', rotation=270, labelpad=10)
+    cbar = fig.colorbar(cax, ax = ax, orientation='vertical', shrink=0.65)
+    cbar.set_label(settings['water_index'] + ' Pixel Value', rotation=270, labelpad=10)
 
     # Figure settings
     ax.axis('off')

@@ -7,10 +7,6 @@ __pycache__/
 *.txt
 *.html
 *.xml
-*.zip
-*.json
-*.qgz
-*.mp4
 
 *.png
 !extraction.png

@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.cm as cm
 import shutil
-import pdb
+
 from coastsat_ps.shoreline_tools import (calc_water_index, classify_single, 
                                          create_shoreline_buffer,
                                          process_shoreline, sl_extract, 
@@ -28,6 +28,7 @@ from coastsat_ps.plotting import (initialise_plot, initialise_plot_gen, rgb_plot
 #%% Overall shoreline extraction function
 
 def extract_shorelines(outputs, settings, del_index = False, reclassify = False):
+
     # Extract shoreline crop region and calculate water index
     batch_index_and_classify(outputs, settings, reclassify = reclassify)
     index_dict_update(outputs, settings)
@@ -266,13 +267,13 @@ def batch_threshold_sl(outputs, settings):
                            transects, fig, settings)
                 histogram_plot(ax3, vec, t_otsu, settings)
             else:
-                fig, ax1, ax2, ax3 = initialise_plot(settings, im_name, index)
+                fig, ax1, ax2, ax3, ax4 = initialise_plot(settings, im_name, index)
                 rgb_plot(ax1, im_RGB, sl_pix, transects)
                 #ax1.imshow(mask)
                 class_plot(ax2, im_RGB, im_classif, sl_pix, transects, settings, colours) 
                 index_plot(ax3, index, t_otsu, comb_mask, sl_pix, 
                            transects, fig, settings)
-                # histogram_plot_split(ax4, index, im_classif, im_ref_buffer, t_otsu, settings, colours)
+                histogram_plot_split(ax4, index, im_classif, im_ref_buffer, t_otsu, settings, colours)
             
             # Save plot
             plt.close('all')

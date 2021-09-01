@@ -14,7 +14,7 @@ from coastsat_ps.shoreline_tools import classify_single
 #from shapely.geometry import box
 from arosics import COREG_LOCAL, DESHIFTER, COREG
 from xml.dom import minidom
-import pdb
+
 #%% General Functions
 
 def create_folder(filepath):
@@ -54,7 +54,7 @@ def udm_to_mask(udm_array, bit_string):
 
 #%% Mask manipulation functions
 
-def save_mask(udm_filepath, save_path, bit_string, cloud_issue = True, nan_issue = False): 
+def save_mask(udm_filepath, save_path, bit_string, cloud_issue = False, nan_issue = False): 
     
     ''' Save extracted mask '''
     
@@ -72,11 +72,11 @@ def save_mask(udm_filepath, save_path, bit_string, cloud_issue = True, nan_issue
         # erroneously identified as clouds by UDM cloud detection algorithm
         if sum(sum(mask)) > 0 and sum(sum(~mask)) > 0:
             # Remove long/thin mask elements (often WW)
-            elem = morphology.square(200) # use a square of width 25 pixels (75m)
+            elem = morphology.square(25) # use a square of width 25 pixels (75m)
             mask = morphology.binary_opening(mask,elem) # perform image opening
             
             # remove objects with less than 25*75 connected pixels (~75m*225m = 16,875m^2)
-            morphology.remove_small_objects(mask, min_size=500*75, connectivity=1, in_place=True)
+            morphology.remove_small_objects(mask, min_size=25*75, connectivity=1, in_place=True)
       
     if nan_issue:
         # Remove nan pixels that form  thin features
@@ -183,6 +183,7 @@ def gdal_subprocess(settings, gdal_command_in, command_list):
         gdal_subprocess('gdalsrsinfo', ["-o", "xml", "in_dem.tif"], 'yes')
     
     '''
+    
     #gdal_loc = [os.path.join('/anaconda2/envs/coastsat/bin/', gdal_command_in)] #removed 30/5/2021
     gdal_loc = [os.path.join(settings['GDAL_location'], gdal_command_in)]
     
@@ -196,6 +197,7 @@ def gdal_subprocess(settings, gdal_command_in, command_list):
 def merge_crop(settings, files_list, file_out_name, epsg_in = False, nan_mask = False):
     ''' Merge and crop list of images with gdalwarp
     Note - second file is output in areas of overlap'''
+    
     if epsg_in == False:
         epsg_in = settings['output_epsg']
     
