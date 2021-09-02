@@ -74,9 +74,8 @@ Results and plots are saved in '...CoastSat.PlanetScope/outputs/site_name/shorel
 ## **Known Issues**
 
 The following issues have been identified by users and workarounds are presented below. My availability to maintain and update this repo is limited so user feedback, bug fixes and devlopments are encouraged! 
-- Inability to select reference image - comment out [this](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-828644872) section of code. See [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-840894375) for explanation. 
+- Inability to select reference image - comment out [this](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-828644872) section of code. See [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-840894375) for explanation. Partially resolved (09/21) and alternate installation environment (environment_test.yml) is provided in development branch. 
 - Environment and GDAL installation issues - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-830543064).
-- Working folder name incorrect for code to run for windows users - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/3#issue-890303529).
 
 
 ## **Training Neural-Network Classifier**
