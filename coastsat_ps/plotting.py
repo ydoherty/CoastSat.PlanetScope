@@ -49,7 +49,7 @@ def initialise_plot(settings, im_name, index):
 
     # according to the image shape, decide whether it is better to have the images
     # in vertical subplots or horizontal subplots
-    if index.shape[0] > 2.5*index.shape[1]:
+    if index.shape[0] > 1.5*index.shape[1]:
         # vertical subplots
         gs = gridspec.GridSpec(nrows = 10, ncols = 30,
                         wspace = 0, hspace = 0.15,
@@ -65,15 +65,15 @@ def initialise_plot(settings, im_name, index):
         # horizontal subplots
         print('\nFix horizontal plots')
         # vertical subplots
-        gs = gridspec.GridSpec(nrows = 10, ncols = 30,
+        gs = gridspec.GridSpec(nrows = 30, ncols = 10,
                         wspace = 0, hspace = 0.15,
                         bottom=0.07, top=0.89, 
                         left=0.1, right=0.9)
         
-        ax1 = fig.add_subplot(gs[0:7,0:10])
-        ax2 = fig.add_subplot(gs[0:7,10:20], sharex=ax1, sharey=ax1)
-        ax3 = fig.add_subplot(gs[0:7,20:30], sharex=ax1, sharey=ax1)
-        ax4 = fig.add_subplot(gs[8:,1:29])
+        ax1 = fig.add_subplot(gs[0:10,0:7])
+        ax2 = fig.add_subplot(gs[10:20,0:7], sharex=ax1, sharey=ax1)
+        ax3 = fig.add_subplot(gs[20:30,0:7], sharex=ax1, sharey=ax1)
+        ax4 = fig.add_subplot(gs[1:29,8:])
 
     # Set title from im_name
     fig.suptitle(settings['water_index'] + ' Water Index with ' +  
@@ -97,7 +97,7 @@ def initialise_plot_gen(settings, im_name, index):
 
     # according to the image shape, decide whether it is better to have the images
     # in vertical subplots or horizontal subplots
-    if index.shape[0] > 2.5*index.shape[1]:
+    if index.shape[0] > 1.5*index.shape[1]:
         # vertical subplots
         gs = gridspec.GridSpec(nrows = 10, ncols = 30,
                         wspace = 0, hspace = 0.15,
@@ -110,14 +110,14 @@ def initialise_plot_gen(settings, im_name, index):
         
     else:
         # horizontal subplots
-        gs = gridspec.GridSpec(nrows = 4, ncols = 1, 
-                               hspace = 0.2,
-                               bottom=0.03, top=0.97, 
-                               left=0.03, right=0.97)
+        gs = gridspec.GridSpec(nrows = 30, ncols = 10,
+                        wspace = 0, hspace = 0.15,
+                        bottom=0.07, top=0.89, 
+                        left=0.1, right=0.9)
         
-        ax1 = fig.add_subplot(gs[0,0])
-        ax2 = fig.add_subplot(gs[2,0], sharex=ax1, sharey=ax1)
-        ax3 = fig.add_subplot(gs[3,0])
+        ax1 = fig.add_subplot(gs[0:15,0:7])
+        ax2 = fig.add_subplot(gs[15:30,0:7], sharex=ax1, sharey=ax1)
+        ax3 = fig.add_subplot(gs[1:29,8:])
 
     # Set title from im_name
     fig.suptitle(settings['water_index'] + ' Water Index with ' +  
