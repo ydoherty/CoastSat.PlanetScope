@@ -67,17 +67,21 @@ def initialise_settings(settings):
     
     ##########################################################################
     
-    # Check filepath is good
+    # Check filepath is acceptible for GDAL
+    # Can comment out the following two lines on windows
     if ' ' in os.getcwd():
-        raise Exception('Ensure no whitespace in filepath to CoastSat.PlanetScope folder (gdal error)')
+        raise Exception('Ensure no whitespace in filepath to CoastSat.PlanetScope folder (causes gdal error on mac as of 10/2020).' +
+                        'Whitespace acceptable for Windows operating system. Comment out Lines 72-74 in data_import')
     
     # Ensure GDAL directory exists
     if os.path.isdir(settings['GDAL_location']) == False:
         raise Exception('Ensure GDAL location entered is correct')
         
     # Ensure working directory is coastsat
-    if os.getcwd()[-20:] != 'CoastSat.PlanetScope':
-        raise Exception('Change working directory to CoastSat.PlanetScope')
+    if not (os.getcwd()[-20:] != 'CoastSat.PlanetScope' or
+            os.getcwd()[-25:] != 'CoastSat.PlanetScope-main'):
+        raise Exception('Change working directory to CoastSat.PlanetScope or CoastSat.PlanetScope-main.' +
+                        'This line can be commented out if a different folder name is wanted. Check is here to ensure working directory is deliberate so data is not saved in a random location ')
     
     # Create output_folders
     settings['outputs_base_folder'] = create_folder(os.path.join(os.getcwd(),'outputs'))
