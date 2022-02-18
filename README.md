@@ -29,7 +29,7 @@ conda env create -f environment.yml -n coastsat_ps
 conda activate coastsat_ps
 ``` 
 
-Note that the CoastSat.PlanetScope repo was written on a mac. Issues regarding environment installation on windows have been resolved however other issues may persist. Full windows support is still a work in progress and will hopefully be complete by April 2021. Please raise an issue for any bugs encountered to assist with this process. 
+Note that the CoastSat.PlanetScope repo was written on a mac. Issues regarding environment installation on windows have been resolved however other issues may persist. Full windows support is still a work in progress. Please raise an issue for any bugs encountered to assist with this process. 
 
 ## **Data Requirements**
 
@@ -96,6 +96,6 @@ Steps are provided in "...CoastSat.PlanetScope/coastsat_ps/classifier/train_new_
 Detailed results and methodology outlined in:
 
 Doherty Y., Harley M.D., Vos K., Splinter K.D. (2021). Evaluation of PlanetScope Dove Satellite Imagery for High-Resolution, Near-Daily Shoreline Monitoring (in peer-review).
-- Pre-print hopefully available in mid June 2021
+- Pre-print available soon!
 
 

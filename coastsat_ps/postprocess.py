@@ -191,7 +191,7 @@ def ts_plot_single(settings, sl_csv, transect, savgol, x_scale):
         ax.tick_params(labelbottom=True, bottom = True) 
         ax.xaxis.set_minor_locator(mdates.MonthLocator())
     elif x_scale == 'months':
-        if no_days > 100:
+        if no_days > 200:
             raise Exception('Too many dates to render months properly, try x_ticks = years')
         else:
             ax.xaxis.set_major_locator(mdates.MonthLocator())
