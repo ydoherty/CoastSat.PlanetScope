@@ -256,9 +256,36 @@ def extract_masks(output_dict, settings):
             
             # Find corresponding udm or udm2 file
             if len(output_dict['downloads_map'][folder]['_udm2_clip.tif']['filenames'])>0:
-                udm_count = udm_count + 1
-                print('Code for UDM2 mask still under development')
-            elif len(output_dict['downloads_map'][folder]['_udm_clip.tif']['filenames']) == 0:
+                udm2_count = udm_count + 1
+                print('\n\nCode for UDM2 mask still under development. UDM2 mask skipped and UDM used instead')
+                
+                # Add udm workaround if no udm present
+                if len(output_dict['downloads_map'][folder]['_udm_clip.tif']['filenames']) == 0:
+                    
+                    for i_ in range(len(output_dict['downloads_map'][folder]['_udm2_clip.tif']['filenames'])):
+                    
+                        udm2_name = output_dict['downloads_map'][folder]['_udm2_clip.tif']['filenames'][i_]
+                        udm2_path = output_dict['downloads_map'][folder]['_udm2_clip.tif']['filepaths'][i_]
+    
+                        with rasterio.open(udm2_path) as src:
+                            udm = src.read(8)
+                        
+                        # Set spatial characteristics of the output object to mirror the input
+                        kwargs = src.meta
+                        kwargs.update(
+                            dtype=rasterio.uint8,
+                            count = 1)
+                            
+                        udm_path = udm2_path.replace('udm2_clip.tif', 'AnalyticMS_DN_udm_clip.tif')
+                        udm_name = udm2_name.replace('udm2_clip.tif', 'AnalyticMS_DN_udm_clip.tif')
+
+                        with rasterio.open(udm_path, 'w', **kwargs) as dst:
+                                dst.write_band(1, udm.astype(rasterio.uint8))
+
+                        output_dict['downloads_map'][folder]['_udm_clip.tif']['filenames'] += [udm_name]
+                        output_dict['downloads_map'][folder]['_udm_clip.tif']['filepaths'] += [udm_path]
+                
+            if len(output_dict['downloads_map'][folder]['_udm_clip.tif']['filenames']) == 0:
                 print('No mask found for file' + output_dict['downloads_map'][folder]['_AnalyticMS_clip.tif']['filenames'][i])
             else:
                 for ii in range(len(output_dict['downloads_map'][folder]['_udm_clip.tif']['filenames'])):
