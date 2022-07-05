@@ -99,4 +99,4 @@ Doherty Y., Harley M.D., Vos K., Splinter K.D. (2022). A Python Toolkit to Monit
 - Pre-print available [here](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4052360)
 
 
-As a starting point for user validation studies, an example jupyter notebook comparing CoastSat (Landsat/Sentinel-2) shorelines against in-situ survey data can be found [here](https://github.com/kvos/CoastSat/blob/validation/notebook_validation_Narrabeen.ipynb) for Narrabeen-Collaroy beach. Note that CoastSat.PlanetScope results will require re-structuring to match the CoastSat vallidation input format. 
+As a starting point for user validation studies, an example jupyter notebook comparing CoastSat (Landsat/Sentinel-2) shorelines against in-situ survey data can be found [here](https://github.com/kvos/CoastSat/blob/validation/notebook_validation_Narrabeen.ipynb) for Narrabeen-Collaroy beach. Note that CoastSat.PlanetScope results will require re-structuring to match the CoastSat validation input format. 
