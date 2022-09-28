@@ -256,10 +256,10 @@ def extract_masks(output_dict, settings):
             
             # Find corresponding udm or udm2 file
             if len(output_dict['downloads_map'][folder]['_udm2_clip.tif']['filenames'])>0:
-                udm2_count = udm_count + 1
+                udm2_count = udm2_count + 1
                 print('\n\nCode for UDM2 mask still under development. UDM2 mask skipped and UDM used instead')
                 
-                # Add udm workaround if no udm present
+                # Add udm2 workaround if no udm present - creates udm from udm2
                 if len(output_dict['downloads_map'][folder]['_udm_clip.tif']['filenames']) == 0:
                     
                     for i_ in range(len(output_dict['downloads_map'][folder]['_udm2_clip.tif']['filenames'])):
@@ -304,7 +304,7 @@ def extract_masks(output_dict, settings):
                                                                                                    
     # print run time
     print('\n    '+str(img_all)+' masks extracted in ' + str(round(time.time() - start_time)) + ' seconds')
-    print('        ' + str(udm_count) + ' udm masks extracted' + '\n        ' + str(udm2_count) + ' udm2 masks extracted\n')
+    print('        ' + str(udm_count) + ' udm masks extracted' + '\n        ' + str(udm2_count) + ' udm2 masks converted to udm\n')
     return output_dict
 
     

@@ -70,8 +70,7 @@ def initialise_settings(settings):
     # Check filepath is acceptible for GDAL
     # Can comment out the following two lines on windows
     if ' ' in os.getcwd():
-        raise Exception('Ensure no whitespace in filepath to CoastSat.PlanetScope folder (causes gdal error on mac as of 10/2020).' +
-                        'Whitespace acceptable for Windows operating system. Comment out Lines 72-74 in data_import')
+        raise Exception('Ensure no whitespace in filepath to CoastSat.PlanetScope folder as this causes a gdal error. Edit filepath or move run folder to a new location.')
     
     # Ensure GDAL directory exists
     if os.path.isdir(settings['GDAL_location']) == False:

@@ -79,6 +79,9 @@ select_ref_image(settings)
 
 #%% 1.3) Pre-Processing - image coregistration and scene merging
 
+raise Exception('run cell 1.3 manually')
+    
+# Due to spyder issues, select the below code and press F9 to run rather than running individual cell
 pre_process(settings, outputs, 
         # del_files_int = True will delete intermediate coregistration files to save space
         del_files_int = True)
@@ -99,7 +102,7 @@ add_ref_features(settings)
 shoreline_data = extract_shorelines(outputs, settings, 
                                     
         # del_index = True will delete water index .tif files once used to save space
-        del_index = False, 
+        del_index = True, 
         
         # reclassify = True will reclassify images if they have been classified previously
             # useful when running again with a new classifier
@@ -109,19 +112,14 @@ shoreline_data = extract_shorelines(outputs, settings,
 
 #%% 3) Manual error detection
 
-    # Option 1:
+    # Option 1 - All images pass, creates a csv in the outputs folder: ...CoastSat.PlanetScope/outputs/SITE/shoreline outputs/COREG/NmB/Peak Fraction/shoreline_filter.csv"
         # manual_filter & load_csv = False
-            # All images pass, creates a csv in the outputs folder
-                # "...CoastSat.PlanetScope/outputs/SITE/shoreline outputs/COREG/NmB/Peak Fraction/shoreline_filter.csv"
 
-    # Option 2:
+    # Option 2 - DEFAULT - popup window to keep or discard images (saves choices as a csv to file from option 1):
         # manual_filter = True & load_csv = False    
-            # popup window to keep or discard images (saves choices as a csv)
 
-    # Option 3:
+    # Option 3 - loads and applies the csv saved from option 1 or 2. This file can be manually updated with a text editor prior to running. 
         # manual_filter = False & load_csv = True
-            # loads and applies the csv saved from option 1 or 2
-            # This file can be manually updated if desired with a text editor
          
 shoreline_data = filter_shorelines(settings,
         manual_filter = True, load_csv = False)

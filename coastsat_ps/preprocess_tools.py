@@ -327,7 +327,7 @@ def local_coreg(im_reference, im_target, im_out_local,
                       #footprint_poly_ref = footprint_poly_ref,
                       #footprint_poly_tgt = footprint_poly_tgt,
                       )
-    
+
     #CRL.view_CoRegPoints()
     #CRL.tiepoint_grid.to_PointShapefile(path_out=im_out_local.replace('.tif','.shp'))
     #CRL.view_CoRegPoints_folium().save(im_out_local.replace('.tif','.html'))
@@ -342,8 +342,10 @@ def local_coreg(im_reference, im_target, im_out_local,
     if coreg_success == False:
         copyfile(im_target, im_out_local)
         print('Coregistration failed, raw image copied instead')
+
+    coreg_info_out = CRL.coreg_info
     
-    return CRL.coreg_info, coreg_success
+    return coreg_info_out, coreg_success
 
 
 def mask_coreg(settings, im_target_mask, cr_param, mask_out_path, 
