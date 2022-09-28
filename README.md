@@ -79,6 +79,7 @@ Results and plots are saved in '...CoastSat.PlanetScope/outputs/site_name/shorel
 The following issues have been identified by users and workarounds are presented below. My availability to maintain and update this repo is limited so user feedback, bug fixes and devlopments are encouraged! 
 - Inability to select reference image - comment out [this](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-828644872) section of code. See [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-840894375) for explanation.  
 - Environment and GDAL installation issues - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-830543064). Partially resolved (09/21) with alternate installation environment (environment_alt.yml) provided.
+- Arosics raises an error when running cell 1.3 (image co-registration) in spyder on windows. This appears to be due to the way arosics handles multiprocessing. A workaround is to copy and run the code directly in the spyder terminal or to run using a selection and F9. 
 - Currently the udm2 useable pixel filter is not supported and a conversion into the old udm format is used. An updated udm2 processing step may improve error detection. 
 - The PSB.SD sensor type (see [here](https://developers.planet.com/docs/apis/data/sensors)) was released while this project was in its final stages of development. Utilisation of these additional 4 image bands may be an opportunity to further improve shoreline accuracy. 
 
