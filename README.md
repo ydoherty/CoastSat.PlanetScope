@@ -33,7 +33,6 @@ spyder
 ``` 
 Once spyder is open, navigate to the CoastSat.PlanetScope folder to set the working direcctory (top right hand box in spyder) and open the CoastSat_PS.py file to begin the example run through. Note that every time you want to run the code, you will need to activate the coastsat_ps environnment and open spyder using the last two lines of code above. 
 
-Note that the CoastSat.PlanetScope repo was written on a mac. Issues regarding environment installation on windows have been resolved however other issues may persist. Full windows support is still a work in progress. An alternate installation file (environment_alt.yml) has been provided in the event the standard file does not work. Please raise an issue for any bugs encountered to assist with this process.  
 
 ## **Data Requirements**
 
@@ -74,18 +73,9 @@ Interactive popup window steps include:
 Results and plots are saved in '...CoastSat.PlanetScope/outputs/site_name/shoreline outputs'. 
 
 
-## **Known Issues & Development Opportunities**
-
-The following issues have been identified by users and workarounds are presented below. My availability to maintain and update this repo is limited so user feedback, bug fixes and devlopments are encouraged! 
-- Inability to select reference image - comment out [this](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-828644872) section of code. See [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-840894375) for explanation.  
-- Environment and GDAL installation issues - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-830543064). Partially resolved (09/21) with alternate installation environment (environment_alt.yml) provided.
-- Arosics raises an error when running cell 1.3 (image co-registration) in spyder on windows. This appears to be due to the way arosics handles multiprocessing. A workaround is to copy and run the code directly in the spyder terminal or to run using a selection and F9. 
-- Currently the udm2 useable pixel filter is not supported and a conversion into the old udm format is used. An updated udm2 processing step may improve error detection. 
-- The PSB.SD sensor type (see [here](https://developers.planet.com/docs/apis/data/sensors)) was released while this project was in its final stages of development. Utilisation of these additional 4 image bands may be an opportunity to further improve shoreline accuracy. 
-
 ## **Training Neural-Network Classifier**
 
-Due to the preliminary stage of testing, validation has only been completed at Narrabeen-Collaroy beach (Sydney, Australia). As such, the NN classifier is optimised for this site and may perform poorly at sites with differing sediment composition. It is recommended a new classifier be trained for such sites. 
+Due to the preliminary stage of testing, validation was primarily completed at Narrabeen-Collaroy beach in Sydney, Australia. As such, the NN classifier is optimised for this site and may perform poorly at alternate sites with differing sediment composition. It is recommended a new classifier be trained for such regions. 
 
 Steps are provided in "...CoastSat.PlanetScope/coastsat_ps/classifier/train_new_classifier.py". 
 - Instructions are in this file and based of the CoastSat classifier training [methods](https://github.com/kvos/CoastSat/blob/master/doc/train_new_classifier.md). 
@@ -95,11 +85,27 @@ Steps are provided in "...CoastSat.PlanetScope/coastsat_ps/classifier/train_new_
 ## **Validation Results**
 
 - Accuracy validated against in-situ RTK-GPS survey data at Narrabeen-Collaroy beach in the Northen beaches of Sydney, Australia with a RMSE of 3.5m (n=438). 
-- An equivelent validation study at Duck, North Carolina, USA provided an observed RMSE error of 4.74m (n=167). 
-
+- An equivelent validation study at Duck, North Carolina, USA provided an observed RMSE error of 4.7m (n=167). 
 
 Detailed results and methodology outlined in:
 
 Doherty Y., Harley M.D., Splinter K.D., Vos K. (2022). A Python Toolkit to Monitor Sandy Shoreline Change Using High-	Resolution PlanetScope Cubesats. Environmental Modelling & Software. https://doi.org/10.1016/j.envsoft.2022.105512
 
 As a starting point for user validation studies, an example jupyter notebook comparing CoastSat (Landsat/Sentinel-2) shorelines against in-situ survey data can be found on the main [CoastSat](https://github.com/kvos/CoastSat) repo for Narrabeen-Collaroy beach. Note that CoastSat.PlanetScope results will require re-structuring to match the CoastSat validation input format. 
+
+
+## **Development Opportunities**
+- Currently the Planet provided udm2 useable pixel filter is not supported and a conversion into the old udm format is used. An updated udm2 processing step may improve cloud and sensor error detection. 
+- The PSB.SD sensor type (see [here](https://developers.planet.com/docs/apis/data/sensors)) was released while this project was in its final stages of development. Utilisation of these additional 4 image bands may be an opportunity to further improve shoreline accuracy. 
+- Additional vallidation and comparison studies:
+  - Comparison between the three PlanetScope Dove sensor types (PS2, PS2.SD and PSB.SD)
+  - Vallidation and testing at additional sites globally 
+  - Testing along non-sandy coastlines
+
+
+## **Known Issues & Workarounds**
+
+The following issues have been identified by users and workarounds are presented below. My availability to maintain and update this repo is limited so user feedback, bug fixes and devlopments are encouraged! 
+- Inability to select reference image - comment out [this](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-828644872) section of code. See [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-840894375) for explanation.  
+- Environment installation issues and package conflicts - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-830543064). Seems to be resolved for both mac and windows. Unexpected installation issues may still persist so an alternate installation environment (environment_alt.yml) is provided in the event the standard file does not work. 
+- Arosics raises an error when running cell 1.3 (image co-registration) in spyder on windows. This appears to be due to the way arosics handles multiprocessing on the windows operating system. A workaround is to copy and run the code directly in the spyder console or to run using a selection and F9. Instructions are provided in cell 1.3. 
