@@ -22,23 +22,26 @@ For users of Coastsat, the CoastSat.PlanetScope toolkit may be run in the origin
 - [Rasterio](https://rasterio.readthedocs.io/en/latest/installation.html)
 - [AROSICS](https://danschef.git-pages.gfz-potsdam.de/arosics/doc/installation.html)
 
-For first time users or where rasterio/arosics installation issues arise, a coastsat_ps environment may be installed using the provided environment.yml file. Refer section 1.1. of the [CoastSat](https://github.com/kvos/CoastSat) readme for installation instructions. The following code should be used in place of that outlined in the coastsat instructions:
+For first time users or where rasterio/arosics installation issues arise, a coastsat_ps environment may be installed using the provided environment.yml file. The easiest method of installation is using Anaconda which can be downloaded [here](https://www.anaconda.com/). Once Anaconda is installed, open Anaconda Prompt and navigate to the local downloaded CoastSat.PlanetScope repo folder by entering "cd C:\add\filepath\here\to\CoastSat.PlanetScope". Once this has been done, enter the following commands one by one to install the planetscope environment from the provided .yml file:
+
 ```
 conda env create -f environment.yml -n coastsat_ps
 
 conda activate coastsat_ps
-``` 
 
-Note that the CoastSat.PlanetScope repo was written on a mac. Issues regarding environment installation on windows have been resolved however other issues may persist. Full windows support is still a work in progress. Please raise an issue for any bugs encountered to assist with this process. 
+spyder
+``` 
+Once spyder is open, navigate to the CoastSat.PlanetScope folder to set the working direcctory (top right hand box in spyder) and open the CoastSat_PS.py file to begin the example run through. Note that every time you want to run the code, you will need to activate the coastsat_ps environnment and open spyder using the last two lines of code above. 
+
+Note that the CoastSat.PlanetScope repo was written on a mac. Issues regarding environment installation on windows have been resolved however other issues may persist. Full windows support is still a work in progress. An alternate installation file (environment_alt.yml) has been provided in the event the standard file does not work. Please raise an issue for any bugs encountered to assist with this process.  
 
 ## **Data Requirements**
 
 PlanetScope images must be manually downloaded by the user. 
 - It is recommended this be done using the [QGIS Planet plugin](https://developers.planet.com/docs/integrations/qgis/quickstart/) which enables users to crop images to a user defined area of interest prior to download to reduce image file size. 
 - Access to PlanetScope imagery can be obtained through a [free trial](https://www.planet.com/trial/), [research license](https://www.planet.com/markets/education-and-research/) or [paid subscription](https://www.planet.com/contact-sales/#contact-sales).
+- Required PlanetScope file type is '4-band multispectral Analytic Ortho Scene'. Using the QGIS plugin, filter for "PlanetScope Scene" and download "Analytic Radiance (TOAR) 4-band GeoTiff" images. It is recommended to select the 'clip to AOI' options to reduce file size. 
 - To run CoastSat.PlanetScope, keep all downloaded images and associated metadata in a single folder and outline this folder filepath in the CoastSat_PS.py settings.
-- Required PlanetScope file type is '4-band multispectral Analytic Ortho Scene'. These files should contain DN values and not TOA as explained [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-850956921).
-- As outlined [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-828644872), downloaded udm2 files are not yet supported and may cause issues. These files (if present) should be deleted (manually or batch removed in python) prior to running CoastSat.PlanetScope. 
 
 All user input files (area of interest polygon, transects & tide data) should be saved in the folder "...CoastSat.PlanetScope/user_inputs"
 - Analysis region of interest .kml file may be selected and downloaded using [this tool](http://geojson.io). 
@@ -52,8 +55,8 @@ Beach slopes for the tidal correction (step 5) can be extracted using the [Coast
 
 ![](readme_files/timeseries.png)
 
-It is recommended the toolkit be run in spyder. Ensure spyder graphics backend is set to 'automatic' for proper plot rendering. 
-- Preferences - iPython console - Graphics - Graphics Backend - Automatic
+It is recommended the toolkit be run in spyder. Ensure spyder graphics backend is set to 'automatic' for proper interactive plot rendering. 
+- Preferences - iPython console - Graphics - Graphics Backend - Backend - Automatic
 
 CoastSat.PlanetScope is run from the CoastSat_PS.py file. 
 - Instructions and comments are provided in this file for each step. 
@@ -71,12 +74,13 @@ Interactive popup window steps include:
 Results and plots are saved in '...CoastSat.PlanetScope/outputs/site_name/shoreline outputs'. 
 
 
-## **Known Issues**
+## **Known Issues & Development Opportunities**
 
 The following issues have been identified by users and workarounds are presented below. My availability to maintain and update this repo is limited so user feedback, bug fixes and devlopments are encouraged! 
 - Inability to select reference image - comment out [this](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-828644872) section of code. See [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-840894375) for explanation.  
 - Environment and GDAL installation issues - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-830543064). Partially resolved (09/21) with alternate installation environment (environment_alt.yml) provided.
-
+- Currently the udm2 useable pixel filter is not supported and a conversion into the old udm format is used. An updated udm2 processing step may improve error detection. 
+- The PSB.SD sensor type (see [here](https://developers.planet.com/docs/apis/data/sensors)) was released while this project was in its final stages of development. Utilisation of these additional 4 image bands may be an opportunity to further improve shoreline accuracy. 
 
 ## **Training Neural-Network Classifier**
 
@@ -89,14 +93,12 @@ Steps are provided in "...CoastSat.PlanetScope/coastsat_ps/classifier/train_new_
 
 ## **Validation Results**
 
-- Accuracy validated against in-situ RTK-GPS survey data at Narrabeen-Collaroy beach in the Northen beaches of Sydney, Australia with a RMSE of 3.66m (n=438). 
+- Accuracy validated against in-situ RTK-GPS survey data at Narrabeen-Collaroy beach in the Northen beaches of Sydney, Australia with a RMSE of 3.5m (n=438). 
 - An equivelent validation study at Duck, North Carolina, USA provided an observed RMSE error of 4.74m (n=167). 
 
 
 Detailed results and methodology outlined in:
 
-Doherty Y., Harley M.D., Vos K., Splinter K.D. (2022). A Python Toolkit to Monitor High-Resolution Shoreline Change Using Planetscope Cubesats (in peer-review with EMS).
-- Pre-print available [here](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4052360)
-
+Doherty Y., Harley M.D., Splinter K.D., Vos K. (2022). A Python Toolkit to Monitor Sandy Shoreline Change Using High-	Resolution PlanetScope Cubesats. Environmental Modelling & Software. DOI: https://doi.org/10.1016/j.envsoft.2022.105512
 
 As a starting point for user validation studies, an example jupyter notebook comparing CoastSat (Landsat/Sentinel-2) shorelines against in-situ survey data can be found [here](https://github.com/kvos/CoastSat/blob/validation/notebook_validation_Narrabeen.ipynb) for Narrabeen-Collaroy beach. Note that CoastSat.PlanetScope results will require re-structuring to match the CoastSat validation input format. 
