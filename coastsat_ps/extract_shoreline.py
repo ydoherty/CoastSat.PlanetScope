@@ -117,16 +117,16 @@ def batch_index_and_classify(outputs, settings, reclassify = False):
                                                             toa_path, 
                                                             no_mask = False, raw_mask = False)
                     
-                # Copy geo info from TOA file
-                with rasterio.open(toa_path, 'r') as src:
-                    kwargs = src.meta
-                # Update band info/type
-                kwargs.update(
-                    dtype=rasterio.uint8,
-                    count = 1)
-                # Save im_classif in TOA folder
-                with rasterio.open(class_path, 'w', **kwargs) as dst:
-                    dst.write_band(1, im_classif.astype(rasterio.uint8))
+                    # Copy geo info from TOA file
+                    with rasterio.open(toa_path, 'r') as src:
+                        kwargs = src.meta
+                    # Update band info/type
+                    kwargs.update(
+                        dtype=rasterio.uint8,
+                        count = 1)
+                    # Save im_classif in TOA folder
+                    with rasterio.open(class_path, 'w', **kwargs) as dst:
+                        dst.write_band(1, im_classif.astype(rasterio.uint8))
                     
             # Calculate water index
             calc_water_index(toa_path, settings, image_name)
@@ -221,14 +221,26 @@ def batch_threshold_sl(outputs, settings):
             # Import water index and mask
             with rasterio.open(index_im) as src:
                 index = src.read(1)
-                
-            with rasterio.open(class_path) as src:
-                im_classif = src.read(1)
-            
+
             # Extract crop mask
             if settings['generic_sl_region'] == False:
-                # Create crop mask
-                mask, sand_mask, water_mask = create_crop_mask(im_classif, im_ref_buffer, settings)
+                
+                with rasterio.open(class_path) as src:
+                    im_classif = src.read(1)
+                
+                # Check if PS image size matches the generic SL buffer:
+                mask_gen_flag = False
+                if im_classif.shape != im_ref_buffer.shape:
+                    print('\n\n   ', im_name, 'image dimensions do not match selected reference image. Workaround applied for this image.\n')
+                    # create temp ref_buffer and mask with same dimensions
+                    im_ref_buffer_temp = create_shoreline_buffer(im_classif.shape, georef, image_epsg, settings['pixel_size'], settings)
+                    mask, sand_mask, water_mask = create_crop_mask(im_classif, im_ref_buffer_temp, settings)
+                    mask_gen_flag = True                    
+                
+                else:
+                    # Create crop mask (standard setting)
+                    mask, sand_mask, water_mask = create_crop_mask(im_classif, im_ref_buffer, settings)
+                    
             else:
                 mask = mask_gen
             
@@ -237,7 +249,11 @@ def batch_threshold_sl(outputs, settings):
 
             # Apply classified mask and cloud/nan
             masked_im = np.copy(index)
-            masked_im[mask == 1] = np.nan
+            if (index.shape != mask.shape) and (settings['generic_sl_region']):
+                print('\n\n   ', im_name, 'image dimensions do not match selected reference image. Extraction skipped for this image.\n')
+                continue
+            else:
+                masked_im[mask == 1] = np.nan
             masked_im[comb_mask] = np.nan
                                     
             # Extract sl contours (check # sand pixels)
@@ -246,7 +262,10 @@ def batch_threshold_sl(outputs, settings):
             else:   
                 # Generic crop region for contouring only (avoids 'other' misclassification error)
                 masked_im_gen = np.copy(index)
-                masked_im_gen[mask_gen == 1] = np.nan
+                if mask_gen_flag:
+                    masked_im_gen[mask == 1] = np.nan
+                else:
+                    masked_im_gen[mask_gen == 1] = np.nan
                 masked_im_gen[comb_mask] = np.nan
                 # Extract SL
                 contours, vec, t_otsu = sl_extract(masked_im, sand_mask, water_mask, masked_im_gen, settings)
@@ -273,7 +292,10 @@ def batch_threshold_sl(outputs, settings):
                 class_plot(ax2, im_RGB, im_classif, sl_pix, transects, settings, colours) 
                 index_plot(ax3, index, t_otsu, comb_mask, sl_pix, 
                            transects, fig, settings)
-                histogram_plot_split(ax4, index, im_classif, im_ref_buffer, t_otsu, settings, colours)
+                if mask_gen_flag:
+                    histogram_plot_split(ax4, index, im_classif, im_ref_buffer_temp, t_otsu, settings, colours)
+                else:
+                    histogram_plot_split(ax4, index, im_classif, im_ref_buffer, t_otsu, settings, colours)
             
             # Save plot
             plt.close('all')

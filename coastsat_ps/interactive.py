@@ -157,12 +157,14 @@ def ref_im_select(settings):
         cloud_mask = find_mask(fn, 'cloud_mask.tif', raw_folder = True)
         nan_mask = find_mask(fn, 'NaN_mask.tif', raw_folder = True)
         
-        # Remove images with small aoi
-            # Remembers the min nan pixels so far as a limit
-        if len(filenames) >5:
+        # Skip images with small aoi
+        skip_count = 0
+        if len(filenames) >10:
             if nan_max == 0:
                 nan_max = np.sum(im_ms[:,:,0] == 0)
-            if np.sum(im_ms[:,:,0] == 0) > nan_max or np.sum(nan_mask) > 0:
+            if np.sum(im_ms[:,:,0] == 0) > nan_max*1.25:# or np.sum(nan_mask) > 0:
+                skip_count += 1
+                print('\r', skip_count, 'files auto skipped as a reference image due to small AOI', end = '')
                 continue
             elif np.sum(im_ms[:,:,0] == 0) < nan_max:
                 nan_max = np.sum(im_ms[:,:,0] == 0)

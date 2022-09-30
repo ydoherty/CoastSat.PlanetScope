@@ -22,8 +22,8 @@ settings = {
     'extent_thresh': 80, # Default 80
     # Desired output shoreline epsg
     'output_epsg': '28356',
-    
-    
+
+
     ### Reference files (in "...CoastSat.PlanetScope/user_inputs/") ###
     # Area of interest file (save as .kml file from geojson.io website)
     'aoi_kml': 'NARRA_polygon.kml',
@@ -79,15 +79,12 @@ select_ref_image(settings)
 
 #%% 1.3) Pre-Processing - image coregistration and scene merging
 
-raise Exception('run cell 1.3 manually')
+raise Exception('Run cell 1.3 manually')
     
-# Due to spyder issues, select the below code and press F9 to run rather than running individual cell
+# Due to spyder issue, select the below code and press F9 to run rather than running individual cell
 pre_process(settings, outputs, 
         # del_files_int = True will delete intermediate coregistration files to save space
         del_files_int = True)
-
-# Note "Failed to delete GEOS geom" error message in console during 
-    # co-registraion does not impact algorithm. Working on bug fix. 
 
 
 #%% 2.1) Select georectified/merged image for classification, reference shoreline and transects
@@ -135,7 +132,7 @@ sl_csv = compute_intersection(shoreline_data, settings)
 tide_settings = {
     # select beach slope as a generic value, or list of values corresponding to each transect
         # Transect specific beach slope values can be extracted with the CoastSat beach slope tool https://github.com/kvos/CoastSat.slope
-    'beach_slope': [0.085, 0.075, 0.08, 0.08, 0.1], #0.1
+    'beach_slope': [0.085, 0.075, 0.08, 0.08, 0.1], #0.1 - Can be found using CoastSat.Slope toolbox
     
     # Reference elevation contour
     'contour': 0.7,

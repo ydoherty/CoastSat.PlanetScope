@@ -33,6 +33,8 @@ def initialise_settings(settings):
     settings['filter_level'] = 2 #3 often fails, bug?
     # Generic land mask - if False, individual masks extracted (slower but more accurate for large geolocation errors)
     settings['generic_land_mask'] = False
+    # Workaround for arosics inability to coregister images with different CRS. Reprojects all TOA/mask files to output epsg first. 
+    settings['arosics_reproject'] = False
     
     
     ### Shoreline extraction method
@@ -49,8 +51,9 @@ def initialise_settings(settings):
 
     
     ### Thin beach width fixes
-    # Generic detection region - if False, individual masks extracted (slower but more accurate sl extraction)
-    settings['generic_sl_region'] = False # Use False for beach w no sand
+    # Generic detection region - if False individual masks are extracted (slower but more accurate sl extraction)
+    settings['generic_sl_region'] = False   # Use True for beach w no sand when having issues with classifier
+                                            # When true, shoreline is based on a generic crop and otsu and does not use a classified image 
     # Tweak to sl mask for thin/non-existant beach width
     settings['thin_beach_fix'] = True
 
@@ -68,7 +71,6 @@ def initialise_settings(settings):
     ##########################################################################
     
     # Check filepath is acceptible for GDAL
-    # Can comment out the following two lines on windows
     if ' ' in os.getcwd():
         raise Exception('Ensure no whitespace in filepath to CoastSat.PlanetScope folder as this causes a gdal error. Edit filepath or move run folder to a new location.')
     

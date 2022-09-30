@@ -109,7 +109,7 @@ def pre_process(settings, outputs, del_files_int = True, del_no_pass = False, pr
     # Check if pre-processing run previously
     if len(os.listdir(settings['merge_out']))>1:
             
-        # Map foler
+        # Map folder
         map_merge(settings, outputs)
         
     else:
@@ -201,7 +201,10 @@ def convert_to_TOA(output_dict, settings):
     for folder in output_dict['downloads_map']:  
         for i in range(len(output_dict['downloads_map'][folder]['_AnalyticMS_clip.tif']['filepaths'])):
             # print progress
-            print('\rConverting image ' + str(count) + ' of ' + str(noImage) + ' to TOA (' + str(int((count/noImage)*100)) + '%)', end = '')
+            if settings['arosics_reproject'] == False:
+                print('\rConverting image ' + str(count) + ' of ' + str(noImage) + ' to TOA (' + str(int((count/noImage)*100)) + '%)', end = '')
+            else:
+                print('\rConverting image ' + str(count) + ' of ' + str(noImage) + ' to TOA (' + str(int((count/noImage)*100)) + '%) - arosics_reproject workaround applied', end = '')
             image_path = output_dict['downloads_map'][folder]['_AnalyticMS_clip.tif']['filepaths'][i]
             # Find corresponding xml file
             search_id = output_dict['downloads_map'][folder]['_AnalyticMS_clip.tif']['filenames'][i][9:20]
@@ -215,7 +218,7 @@ def convert_to_TOA(output_dict, settings):
             count = count + 1
                         
             # convert to TOA
-            TOA_conversion(image_path, xml_path, save_path)
+            TOA_conversion(settings, image_path, xml_path, save_path)
                                                 
     # print run time
     print('\n    '+str(noImage)+' images converted to TOA in ' + str(round(time.time() - start_time)) + ' seconds\n')
@@ -257,7 +260,7 @@ def extract_masks(output_dict, settings):
             # Find corresponding udm or udm2 file
             if len(output_dict['downloads_map'][folder]['_udm2_clip.tif']['filenames'])>0:
                 udm2_count = udm2_count + 1
-                print('\n\nCode for UDM2 mask still under development. UDM2 mask skipped and UDM used instead')
+                print(' - Code for new UDM2 mask not yet supported. Original UDM form used instead', end = '')
                 
                 # Add udm2 workaround if no udm present - creates udm from udm2
                 if len(output_dict['downloads_map'][folder]['_udm_clip.tif']['filenames']) == 0:
@@ -296,14 +299,14 @@ def extract_masks(output_dict, settings):
                         
                         save_name = output_dict['downloads_map'][folder]['_udm_clip.tif']['filenames'][ii].replace('.tif','')+'_cloud_mask.tif'
                         save_path = os.path.join(settings['raw_data'],save_name) 
-                        save_mask(mask_path, save_path,'00000010', cloud_issue = True)
+                        save_mask(settings, mask_path, save_path,'00000010', cloud_issue = True)
                         
                         save_name = output_dict['downloads_map'][folder]['_udm_clip.tif']['filenames'][ii].replace('.tif','')+'_NaN_mask.tif'
                         save_path = os.path.join(settings['raw_data'], save_name) 
-                        save_mask(mask_path, save_path,'1111100', nan_issue = True)
+                        save_mask(settings, mask_path, save_path,'1111100', nan_issue = True)
                                                                                                    
     # print run time
-    print('\n    '+str(img_all)+' masks extracted in ' + str(round(time.time() - start_time)) + ' seconds')
+    print('\n\n    '+str(img_all)+' masks extracted in ' + str(round(time.time() - start_time)) + ' seconds')
     print('        ' + str(udm_count) + ' udm masks extracted' + '\n        ' + str(udm2_count) + ' udm2 masks converted to udm\n')
     return output_dict
 
@@ -367,7 +370,11 @@ def map_raw_folder(settings_dict, output_dict, coreg = False):
         
                 # Add epsg to dict   
                 if end == 'TOA.tif':
-                    map_dict[date][end]['epsg'] += [get_epsg(output_dict, date, file)]
+                    if settings_dict['arosics_reproject'] == True:
+                        # modify input epsg hen using arosics workaround
+                        map_dict[date][end]['epsg'] += [settings_dict['output_epsg'].replace('EPSG:','')]
+                    else:
+                        map_dict[date][end]['epsg'] += [get_epsg(output_dict, date, file)]
         
     if len(map_dict) == 0:
         print('\n'+'No images found, check inputs and retry')  
@@ -583,6 +590,7 @@ def merge_raw_files(settings_dict, output_dict, print_merge_summary = False, cor
         
         # merge/crop based on number of files in folder
         if len(files_dict['TOA.tif']['filenames'])>1:
+            # Merge these images
             sat_id_list = {}
             # find unique satellite ids for images on each date
             for i in range(len(files_dict['TOA.tif']['filenames'])):
@@ -657,7 +665,7 @@ def merge_raw_files(settings_dict, output_dict, print_merge_summary = False, cor
                                 if merge_file == output_dict[merge_folder][folder][data_type]['filepaths'][index_match]:
                                     epsg_list += [output_dict[merge_folder][folder]['TOA.tif']['epsg'][index_match]]
                         if len(np.unique(epsg_list)) != 1:
-                            print('Error: epsg codes do not match, cannot merge without conversion first. Code in development')
+                            print('Error: epsg codes do not match, cannot merge without conversion first. Try setting arosics_reproject setting to True. ')
                         else:                    
                             epsg_in = 'EPSG:' + str(np.unique(epsg_list)[0])
                                                   
@@ -703,7 +711,8 @@ def merge_raw_files(settings_dict, output_dict, print_merge_summary = False, cor
                     cropCount = cropCount + 1
                 
             count = count + 1
-                                    
+        
+        # Crop these images
         elif len(files_dict['TOA.tif']['filenames'])==1:  
             sat_id = files_dict['TOA.tif']['filenames'][0][16:20]   
             if '_' in sat_id:
@@ -728,7 +737,7 @@ def merge_raw_files(settings_dict, output_dict, print_merge_summary = False, cor
                 for index_match in range(len(output_dict[merge_folder][folder][data_type]['filepaths'])):
                     if files_dict[data_type]['filepaths'][0] == output_dict[merge_folder][folder][data_type]['filepaths'][index_match]:
                         epsg_in = 'EPSG:' + str(output_dict[merge_folder][folder]['TOA.tif']['epsg'][index_match])
-                    
+
                 merge_crop(settings_dict, files_dict[data_type]['filepaths'], name, nan_mask = nan_mask_bool, epsg_in = epsg_in)
                 epsg_in = 0
                 

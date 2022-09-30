@@ -17,6 +17,8 @@ from shapely import geometry
 from coastsat_ps.interactive import (convert_epsg, convert_world2pix, convert_pix2world, 
                                     get_ps_no_mask, get_ps_data, get_im_ms)
 
+import warnings
+warnings.filterwarnings("ignore", category=RuntimeWarning) 
 
 #%% Index calculations
 

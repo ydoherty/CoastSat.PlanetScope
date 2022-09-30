@@ -54,7 +54,7 @@ def udm_to_mask(udm_array, bit_string):
 
 #%% Mask manipulation functions
 
-def save_mask(udm_filepath, save_path, bit_string, cloud_issue = False, nan_issue = False): 
+def save_mask(settings, udm_filepath, save_path, bit_string, cloud_issue = False, nan_issue = False): 
     
     ''' Save extracted mask '''
     
@@ -92,7 +92,17 @@ def save_mask(udm_filepath, save_path, bit_string, cloud_issue = False, nan_issu
     # save mask
     with rasterio.open(save_path, 'w', **kwargs) as dst:
             dst.write_band(1, mask.astype(rasterio.uint8))
-     
+    
+    # arosics workaround
+    if settings['arosics_reproject'] == True:
+        crs_in = str(src.crs).replace('epsg', 'EPSG')
+        if crs_in != settings['output_epsg']:
+            if 'NaN_mask' in save_path:
+                nan_val = '1'
+            else:
+                nan_val = '0'
+            raster_change_epsg(settings, save_path, nan_val, crs_in)
+    
         
 def get_cloud_percentage_nan_cloud(nan_path, cloud_mask_path):
     # import nan and cloud masks
@@ -459,7 +469,28 @@ def get_epsg(output_dict, date, raw_toa_filename):
     
     return epsg
 
-def TOA_conversion(image_path, xml_path, save_path):
+
+def raster_change_epsg(settings, filepath, no_data, crs_in):
+    
+    command_list = ["-s_srs", crs_in,
+                "-t_srs", settings['output_epsg'],
+                "-of", "GTiff",
+                "-cutline", settings['aoi_geojson'],
+                "-srcnodata", no_data, # 0 for regular, 1 for nan masks
+                "-dstnodata", no_data,
+                "-crop_to_cutline",
+                "-overwrite"]
+
+    command_list = command_list + [filepath] + [filepath.replace('.tif', '_temp.tif')]
+    
+    # run proces (seconds)
+    gdal_subprocess(settings, 'gdalwarp', command_list)
+    # delete and rename file
+    os.remove(filepath)
+    os.rename(filepath.replace('.tif', '_temp.tif'), filepath)
+
+
+def TOA_conversion(settings, image_path, xml_path, save_path):
     
     ''' 
     1) Convert DN values to Top of Atmosphere (TOA)
@@ -549,4 +580,14 @@ def TOA_conversion(image_path, xml_path, save_path):
             dst.write_band(2, green_ref_scaled.astype(rasterio.uint16))
             dst.write_band(3, red_ref_scaled.astype(rasterio.uint16))
             dst.write_band(4, nir_ref_scaled.astype(rasterio.uint16))
+    
+    # Reproject all to output coordinate system
+    if settings['arosics_reproject'] == True:
+        crs_in = str(src.crs).replace('epsg', 'EPSG')
+        if crs_in != settings['output_epsg']:
+            raster_change_epsg(settings, save_path, '0', crs_in)
+        
+    
+
+
     
