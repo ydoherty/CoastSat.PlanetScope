@@ -222,7 +222,7 @@ def merge_crop(settings, files_list, file_out_name, epsg_in = False, nan_mask = 
     
     command_list = ["-s_srs", epsg_in,
                 "-t_srs", settings['output_epsg'],
-                "-r", "cubicspline", # cubic, bilinear, near
+                #"-r", settings['gdal_method']
                 "-of", "GTiff",
                 "-cutline",settings['aoi_geojson'],
                 "-srcnodata", no_data_in_val, 
@@ -475,7 +475,7 @@ def raster_change_epsg(settings, filepath, no_data, crs_in):
     
     command_list = ["-s_srs", crs_in,
                 "-t_srs", settings['output_epsg'],
-                "-r", "cubicspline", # cubic, bilinear, near
+                "-r", settings['gdal_method']
                 "-of", "GTiff",
                 "-cutline", settings['aoi_geojson'],
                 "-srcnodata", no_data, # 0 for regular, 1 for nan masks
