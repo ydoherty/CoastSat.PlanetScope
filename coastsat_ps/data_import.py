@@ -35,8 +35,10 @@ def initialise_settings(settings):
     settings['generic_land_mask'] = False
     # Workaround for arosics inability to coregister images with different CRS. Reprojects all TOA/mask files to output epsg first. 
     settings['arosics_reproject'] = False
-    # GDAL warp CRS reprojection method. 'cubic' & 'cubicspline' look the best but are slowest. 'near' is the fastest but images are jagged. 'bilinear' is a good middle ground. 
-    settings['gdal_method'] = 'bilinear'
+    # GDAL warp CRS re-sampling method. 
+        # 'near' is the fastest/default but images may be jagged as no is smoothing applied. 'cubic' & 'cubicspline' look the best but are slowest. 'bilinear' is a good middle ground. 
+        # Note that re-sampling using cubic, cubicspline and bilinear options may cause issues with arosics. 
+    settings['gdal_method'] = 'near'
     
     
     ### Shoreline extraction method
