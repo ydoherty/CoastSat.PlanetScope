@@ -331,7 +331,8 @@ def batch_threshold_sl(outputs, settings):
     gdf = output_to_gdf_PL(shorelines_out)
     
     # set projection
-    gdf.crs = {'init':str(settings['output_epsg'])}
+    # gdf.crs = {'init':str(settings['output_epsg'])}
+    gdf.crs = settings['output_epsg']
     
     # save as geojson
     gdf.to_file(settings['sl_geojson_file'], driver='GeoJSON', encoding='utf-8')
