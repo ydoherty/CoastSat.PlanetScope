@@ -18,28 +18,31 @@ Output files include:
 
 ## **Installation**
 
-For users of Coastsat, the CoastSat.PlanetScope toolkit may be run in the original CoastSat environment once the following packages are installed:
+For users of Coastsat, it is possible to run the CoastSat.PlanetScope toolkit in the original CoastSat environment once the following packages are installed:
 - [Rasterio](https://rasterio.readthedocs.io/en/latest/installation.html)
 - [AROSICS](https://danschef.git-pages.gfz-potsdam.de/arosics/doc/installation.html)
 
-For first time users or where rasterio/arosics installation issues arise, a coastsat_ps environment may be installed using the provided environment.yml file. The easiest method of installation is using Anaconda which can be downloaded [here](https://www.anaconda.com/). Once Anaconda is installed, open Anaconda Prompt and navigate to the local downloaded CoastSat.PlanetScope repo folder by entering "cd C:\add\filepath\here\to\CoastSat.PlanetScope". Once this has been done, enter the following commands one by one to install the planetscope environment from the provided .yml file:
+It is recommended however to create a dedicated coastsat_ps environment using the provided environment.yml file. The advised method of installation is using [Mamba]([https://www.anaconda.com/](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html). [Anaconda](https://www.anaconda.com/) may also be used, however this method is slower and more prone to package conflicts. Once Mamba or Anaconda are installed, open Mamba/Anaconda prompt and navigate to the local downloaded CoastSat.PlanetScope repo folder by entering "cd /d C:\add\filepath\here\to\CoastSat.PlanetScope". Once this has been done, enter the following commands one by one to install the planetscope environment from the provided .yml file (replace mamba with conda below if using Anaconda):
 
 ```
-conda env create -f environment.yml -n coastsat_ps
+mamba env create -f environment.yml -n coastsat_ps
 
-conda activate coastsat_ps
+mamba activate coastsat_ps
 
 spyder
-``` 
+```
+
+If installation fails using the default environment.yml, several alternate yaml file options are provided in the alt_environment folder. 
+
 Once spyder is open, navigate to the CoastSat.PlanetScope folder to set the working direcctory (top right hand box in spyder) and open the CoastSat_PS.py file to begin the example run through. Note that every time you want to run the code, you will need to activate the coastsat_ps environnment and open spyder using the last two lines of code above. 
 
 
 ## **Data Requirements**
 
 PlanetScope images must be manually downloaded by the user. 
-- It is recommended this be done using the [QGIS Planet plugin](https://developers.planet.com/docs/integrations/qgis/quickstart/) which enables users to crop images to a user defined area of interest (AOI) prior to download to reduce image file size. Development was done with an AOI of ~5km2. 
 - Access to PlanetScope imagery can be obtained through a [free trial](https://www.planet.com/trial/), [research license](https://www.planet.com/markets/education-and-research/) or [paid subscription](https://www.planet.com/contact-sales/#contact-sales).
-- Required PlanetScope file type is '4-band multispectral Analytic Ortho Scene'. Using the QGIS plugin, filter for "PlanetScope Scene" and download "Analytic Radiance (TOAR) 4-band GeoTiff" images. It is recommended to select the 'clip to AOI' options to reduce file size. 
+- Required PlanetScope file type is '4-band multispectral Analytic Ortho Scene'. Using the QGIS plugin, filter for "PlanetScope Scene" and download "Analytic Radiance (TOAR) 4-band GeoTiff" images. It is recommended to select the 'clip to AOI' options to reduce file size. Development was done with an AOI of ~5km2. 
+
 - To run CoastSat.PlanetScope, keep all downloaded images and associated metadata in a single folder and outline this folder filepath in the CoastSat_PS.py settings.
 
 All user input files (area of interest polygon, transects & tide data) should be saved in the folder "...CoastSat.PlanetScope/user_inputs"
