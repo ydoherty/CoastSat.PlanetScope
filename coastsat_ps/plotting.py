@@ -373,7 +373,7 @@ def check_land_mask(settings):
     ax[1].set_title('Land mask region')
     ax[1].axis('off')
     
-    plt.show()
+    plt.show(block=False)
     
     # save image
     save_loc = settings['georef_im_path'].replace('.tif', '_and_land_mask_figure.png')
