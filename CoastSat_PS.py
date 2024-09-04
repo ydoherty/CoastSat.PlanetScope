@@ -75,7 +75,20 @@ data_extract(settings, outputs)
 #%% 1.2) Pre-processing - Select reference image for co-registration
 
 select_ref_image(settings)
-  
+
+# If the land mask region is poor, try selecting another reference image:
+#    1) Delete the saved ref_image and mask in ...CoastSat.PlanetScope\outputs\SITENAME\input_data
+#    2) Rerun cell 1.2 and select a different reference image
+
+# If the land mask is poor in several images, set the generic_land_mask setting to True in data_import.py
+
+# If the land mask covers thin land regions (ie barrier islands), try adjusting the following settings:
+#    - reduce min_beach_area (in cell 0)
+#    - reduce land_mask_smoothing_1 (in data_import.py)
+#    - reduce land_mask_smoothing_2 (in data_import.py)
+
+# If the land mask it still poor, try retraining the classifier for your site to improve pixel classification
+
 
 #%% 1.3) Pre-Processing - image coregistration and scene merging
 
@@ -85,6 +98,12 @@ raise Exception('Run cell 1.3 manually')
 pre_process(settings, outputs, 
         # del_files_int = True will delete intermediate coregistration files to save space
         del_files_int = True)
+
+# If coregistration is performing poorly, the following may help:
+#    - try a new reference image
+#    - set the 'generic_land_mask' setting to True in data_import.py
+#    - adjust coregistration settings in data_import.py such as tie-point grid size and tie-point window size
+#    - rerun with global coregstration instead of local coregistration
 
 
 #%% 2.1) Select georectified/merged image for classification, reference shoreline and transects
@@ -106,6 +125,8 @@ shoreline_data = extract_shorelines(outputs, settings,
             # use False to save time on re-runs with the same classifier to save processing time
         reclassify = False)
  
+ # Plot parameters and layout can be adjusted in ...coastsat_ps/plotting.py
+
 
 #%% 3) Manual error detection
 
@@ -144,7 +165,7 @@ tide_settings = {
     # Date filter (minimum)
     'date_min':'2016-01-01',
     # Date filter (maximum)
-    'date_max':'2021-01-01' 
+    'date_max':'2024-01-01' 
     }
 
 sl_csv_tide = tidal_correction(settings, tide_settings, sl_csv)
@@ -167,11 +188,4 @@ for transect in settings['transects_load'].keys():
     # 1.1) 20min
     # 1.3) 2.5h coregistration, 35min merge
     # 2.2) 1h classification, 50min shoreline extraction
-
-
-                
-                
-            
-
-            
 
