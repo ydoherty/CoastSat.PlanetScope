@@ -6,6 +6,8 @@ import rasterio
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Qt5Agg')
 import skimage.exposure as exposure
 import skimage.transform as transform
 import geopandas as gpd
