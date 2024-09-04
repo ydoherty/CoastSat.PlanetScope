@@ -114,7 +114,7 @@ def tidal_correction(settings, tide_settings, sl_csv):
     ax.plot(dates_sat, sl_csv_tide['Tide'], '-o', color='k', ms=6, mfc='w',lw=1, label='image acquisition')
     ax.set(ylabel='tide level [m]',xlim=[dates_sat[0],dates_sat[-1]], title='Water levels at the time of image acquisition');
     ax.legend();
-    plt.show()
+    plt.show(block=False)
     plt.savefig(settings['sl_transect_csv'].replace('.csv', '_tide_time_plot.png'), bbox_inches='tight', dpi=300)
 
     # save csv
@@ -230,7 +230,7 @@ def ts_plot_single(settings, sl_csv, transect, savgol, x_scale):
     save_file = os.path.join(save_folder, 'transect_' + transect + '_timeseries.png')
     fig.savefig(save_file, dpi=200)
 
-    plt.show()
+    plt.show(block=False)
 
 
 
