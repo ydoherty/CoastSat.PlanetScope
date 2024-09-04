@@ -39,7 +39,9 @@ def initialise_settings(settings):
         # 'near' is the fastest/default but images may be jagged as no is smoothing applied. 'cubic' & 'cubicspline' look the best but are slowest. 'bilinear' is a good middle ground. 
         # Note that re-sampling using cubic, cubicspline and bilinear options may cause issues with arosics. 
     settings['gdal_method'] = 'near'
-    
+    # Land mask cleaning smoothing parameters - choose lower values if land mask does not cover thin land regions (ie small barrier islands)
+    settings['land_mask_smoothing_1'] = 15 # pixels (so x3 for metres)
+    settings['land_mask_smoothing_2'] = 10 # pixels (so x3 for metres)
     
     ### Shoreline extraction method
     # Water index [NDWI, NmB, RmB, NmG, NmB_Norm, RmB_Norm]

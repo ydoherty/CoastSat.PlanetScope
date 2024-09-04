@@ -20,6 +20,8 @@ from coastsat_ps.preprocess_tools import (save_mask, TOA_conversion, merge_crop,
                                           local_coreg, mask_coreg, global_coreg,
                                           get_raster_bounds, gdal_subprocess, 
                                           zero_to_nan, load_udm, create_land_mask)
+from coastsat_ps.plotting import check_land_mask
+
 import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
 
@@ -75,6 +77,8 @@ def select_ref_image(settings):
         # Create land mask
         if not os.path.isfile(settings['land_mask']):
             create_land_mask(settings, settings['georef_im_path'], settings['land_mask'], nan_path = False)
+            # check land mask region is good
+            check_land_mask(settings)
     else:
         print('No reference image required for image co-registration = False')
 

@@ -1,6 +1,7 @@
 # Plotting
 
 import numpy as np
+import rasterio
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -324,7 +325,58 @@ def histogram_plot_split(ax, index, im_classif, im_ref_buffer, t_otsu, settings,
         # Plot histogram
         ax.hist(vec, settings['otsu_hist_bins'], color=col_list[i], alpha=0.8,
                 density=True)
-     
 
+
+#%%
+
+def check_land_mask(settings):
+
+    # Load the RGB image
+    rgb_path = settings['georef_im_path']
+    with rasterio.open(rgb_path) as src_rgb:
+        rgb_image = src_rgb.read([3, 2, 1])  # Read the RGB bands
+    
+    # Check the maximum value of the image
+    max_value = rgb_image.max()
+    
+    # Normalize the RGB image if necessary (for visualization)
+    if max_value > 1.0:
+        rgb_image = rgb_image.astype(float) / max_value
+    
+    # Load the single-band mask image
+    mask_path = settings['land_mask']
+    with rasterio.open(mask_path) as src_mask:
+        mask_image = src_mask.read(1)  # Read the single band
+    
+    # Normalize the mask (if necessary) to have values between 0 and 1
+    mask_image = mask_image.astype(float)
+    mask_image = mask_image / mask_image.max()
+    
+    # Invert the mask
+    mask_image = 1 - mask_image
+    
+    # Apply the mask to the RGB image
+    masked_rgb_image = np.copy(rgb_image)
+    for i in range(3):  # Apply mask on each channel (R, G, B)
+        masked_rgb_image[i] = rgb_image[i] * mask_image
+    
+    # Plot the images
+    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+    
+    # Plot the original RGB image
+    ax[0].imshow(np.moveaxis(rgb_image, 0, -1))  # Move the channels to the last dimension
+    ax[0].set_title('Co-registration reference image')
+    ax[0].axis('off')
+    
+    # Plot the masked RGB image
+    ax[1].imshow(np.moveaxis(masked_rgb_image, 0, -1))  # Move the channels to the last dimension
+    ax[1].set_title('Land mask region')
+    ax[1].axis('off')
+    
+    plt.show()
+    
+    # save image
+    save_loc = settings['georef_im_path'].replace('.tif', '_and_land_mask_figure.png')
+    plt.savefig(save_loc, bbox_inches='tight', dpi=200)
 
 

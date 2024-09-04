@@ -107,6 +107,16 @@ def tidal_correction(settings, tide_settings, sl_csv):
         correction = weight*(ps_data['Tide']-contour)/beach_slope + offset
         sl_csv_tide.loc[:, ts] += correction.values
     
+    # Plot tide matching
+    fig, ax = plt.subplots(1,1,figsize=(15,4), tight_layout=True)
+    ax.grid(which='major', linestyle=':', color='0.5')
+    ax.plot(dates_ts, tides_ts, '-', color='0.6', label='all time-series')
+    ax.plot(dates_sat, sl_csv_tide['Tide'], '-o', color='k', ms=6, mfc='w',lw=1, label='image acquisition')
+    ax.set(ylabel='tide level [m]',xlim=[dates_sat[0],dates_sat[-1]], title='Water levels at the time of image acquisition');
+    ax.legend();
+    plt.show()
+    plt.savefig(settings['sl_transect_csv'].replace('.csv', '_tide_time_plot.png'), bbox_inches='tight', dpi=300)
+
     # save csv
     sl_csv_tide.to_csv(settings['sl_transect_csv'].replace('.csv', '_tide_corr.csv'))
     
