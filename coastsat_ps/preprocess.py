@@ -78,11 +78,9 @@ def select_ref_image(settings, replace_ref_im):
             print('Reference image loaded\n')
         
         # Create land mask
-        if not os.path.isfile(settings['land_mask']):
-            create_land_mask(settings, settings['georef_im_path'], settings['land_mask'], nan_path = False)
-            check_land_mask(settings)
-        elif replace_ref_im:
-            create_land_mask(settings, settings['georef_im_path'], settings['land_mask'], nan_path = False)
+        if (not os.path.isfile(settings['land_mask'])) or replace_ref_im:
+            print('\nCreating land mask...')
+            create_land_mask(settings, settings['georef_im_path'], settings['land_mask'], nan_path = False, save_class = True)
             check_land_mask(settings)
     else:
         print('No reference image required for image co-registration = False')

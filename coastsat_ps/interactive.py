@@ -242,7 +242,7 @@ def ref_im_select(settings):
             # copy selected image to user inputs folder
             file_out = fn
             copyfile(file_out, settings['georef_im_path'])
-            print('Selected reference image copied to:\n' + settings['georef_im_path'])
+            print('\nSelected reference image copied to:\n' + settings['georef_im_path'])
             plt.close()
             im_selected = True
             break

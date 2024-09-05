@@ -398,7 +398,7 @@ def mask_coreg(settings, im_target_mask, cr_param, mask_out_path,
             dst.write_band(1, mask.astype(rasterio.uint8))
                 
     
-def create_land_mask(settings, toa_path, save_loc, nan_path = False, raw_mask = False):
+def create_land_mask(settings, toa_path, save_loc, nan_path = False, raw_mask = False, save_class = False):
     
     # Classify image
     if nan_path == False:
@@ -419,16 +419,23 @@ def create_land_mask(settings, toa_path, save_loc, nan_path = False, raw_mask = 
     # Extract mask of non-other pixels 
     other_mask = im_classif == 0
     
-    # Smooth and remove small features
-    elem = morphology.square(15) # use a square of width 10 pixels (30m)
+    # Remove non land pixels less than 30*30m (ie single whitewater pixels)
+    other_mask = other_mask == 0
+    other_mask = morphology.remove_small_objects(other_mask, 
+                                        min_size=30*30/9, 
+                                        connectivity=1)
+    other_mask = other_mask == 0
+    
+    # Remove small land features then smooth the boundary
+    elem = morphology.square(settings['land_mask_smoothing_1']) # use a square of width 10 pixels (30m)
     other_mask = morphology.binary_opening(other_mask,elem) # perform image opening
     other_mask = morphology.remove_small_objects(other_mask, 
                                         min_size=settings['min_beach_area_pixels'], 
                                         connectivity=1)
     
-    # invert boolean and smooth again
+    # Remove small non land features again and smooth
     other_mask = other_mask == 0
-    elem = morphology.square(10) # use a square of width 15 pixels (45m)
+    elem = morphology.square(settings['land_mask_smoothing_2']) # use a square of width 15 pixels (45m)
     other_mask = morphology.binary_opening(other_mask,elem) # perform image opening
     other_mask = morphology.remove_small_objects(other_mask, 
                                         min_size=settings['min_beach_area_pixels'], 
@@ -448,6 +455,12 @@ def create_land_mask(settings, toa_path, save_loc, nan_path = False, raw_mask = 
     # save mask
     with rasterio.open(save_loc, 'w', **kwargs) as dst:
         dst.write_band(1, other_mask.astype(rasterio.uint8))
+
+    # save land mask class
+    if save_class:
+        # Save im_classif in TOA folder
+        with rasterio.open(save_loc.replace('_land_mask.tif', '_class.tif'), 'w', **kwargs) as dst:
+            dst.write_band(1, im_classif.astype(rasterio.uint8))
 
 
 #%% XML file functions

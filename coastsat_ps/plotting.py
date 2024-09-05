@@ -164,7 +164,7 @@ def rgb_plot(ax, im_RGB, sl_pix, transects):
 
 #%%
 
-def class_plot(ax, im_RGB, im_classif, sl_pix, transects, settings, colours):
+def class_plot(ax, im_RGB, im_classif, sl_pix, transects, settings, colours, include_lines = True):
     
     # compute classified image
     im_class = np.copy(im_RGB)
@@ -191,30 +191,31 @@ def class_plot(ax, im_RGB, im_classif, sl_pix, transects, settings, colours):
     # Plot classes over RGB
     ax.imshow(im_class)
     
-    # Plot shoreline
-    ax.plot(sl_pix[:,0], sl_pix[:,1], 'k.', markersize = 0.3)     
-    
-    # Plot transects
-    for pf in transects.values():
-        ax.plot(pf[:,0], pf[:,1], color = 'k', linestyle = ':')  
+    if include_lines:
+        # Plot shoreline
+        ax.plot(sl_pix[:,0], sl_pix[:,1], 'k.', markersize = 0.3)     
         
-    # Plot colours
-    orange_patch = mpatches.Patch(color=colours[0,:], label='sand')
-    white_patch = mpatches.Patch(color=colours[1,:], label='whitewater')
-    blue_patch = mpatches.Patch(color=colours[2,:], label='water')
-    black_patch = mpatches.Patch(color='0.3', label='nan/cloud')
-    black_line = mlines.Line2D([],[],color='k',linestyle='-', label='shoreline')
-    red_line = mlines.Line2D([],[],color='k',linestyle=':', label='transects')
-    
-    # Add legend
-    ax.legend(handles=[orange_patch, white_patch, blue_patch, black_patch, 
-                       black_line, red_line],
-                bbox_to_anchor=(0.5, 0), loc='upper center', fontsize=9,
-                ncol = 6)
-    
-    # General settings
-    ax.axis('off')    
-    ax.set_title('Classified Image', fontsize=10)
+        # Plot transects
+        for pf in transects.values():
+            ax.plot(pf[:,0], pf[:,1], color = 'k', linestyle = ':')  
+        
+        # Plot colours
+        orange_patch = mpatches.Patch(color=colours[0,:], label='sand')
+        white_patch = mpatches.Patch(color=colours[1,:], label='whitewater')
+        blue_patch = mpatches.Patch(color=colours[2,:], label='water')
+        black_patch = mpatches.Patch(color='0.3', label='nan/cloud')
+        black_line = mlines.Line2D([],[],color='k',linestyle='-', label='shoreline')
+        red_line = mlines.Line2D([],[],color='k',linestyle=':', label='transects')
+        
+        # Add legend
+        ax.legend(handles=[orange_patch, white_patch, blue_patch, black_patch, 
+                        black_line, red_line],
+                    bbox_to_anchor=(0.5, 0), loc='upper center', fontsize=9,
+                    ncol = 6)
+        
+        # General settings
+        ax.axis('off')    
+        ax.set_title('Classified Image', fontsize=10)
     
 
     
@@ -361,22 +362,42 @@ def check_land_mask(settings):
         masked_rgb_image[i] = rgb_image[i] * mask_image
     
     # Plot the images
-    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+    fig, ax = plt.subplots(1, 3, figsize=(15, 5))
     
     # Plot the original RGB image
     ax[0].imshow(np.moveaxis(rgb_image, 0, -1))  # Move the channels to the last dimension
     ax[0].set_title('Co-registration reference image')
     ax[0].axis('off')
     
+    # Initialise classifier colours
+    cmap = cm.get_cmap('tab20c')
+    colorpalette = cmap(np.arange(0,13,1))
+    colours = np.zeros((3,4))
+    colours[0,:] = colorpalette[5] # sand
+    colours[1,:] = np.array([150/255,1,1,1]) # ww
+    colours[2,:] = np.array([0,91/255,1,1]) # water
+
+    # classify image
+    class_path  = rgb_path.replace('_im_ref.tif', '_class.tif')
+    with rasterio.open(class_path) as src:
+        im_classif = src.read(1)
+
+    # plot classified image
+    rgb_image_reshaped = np.transpose(rgb_image, (1, 2, 0))
+    class_plot(ax[1], rgb_image_reshaped, im_classif, None, None, settings, colours, include_lines = False)
+    ax[1].axis('off')    
+    ax[1].set_title('Classified image')
+
     # Plot the masked RGB image
-    ax[1].imshow(np.moveaxis(masked_rgb_image, 0, -1))  # Move the channels to the last dimension
-    ax[1].set_title('Land mask region')
-    ax[1].axis('off')
+    ax[2].imshow(np.moveaxis(masked_rgb_image, 0, -1))  # Move the channels to the last dimension
+    ax[2].set_title('Land mask region')
+    ax[2].axis('off')
     
     plt.show(block=False)
     
     # save image
     save_loc = settings['georef_im_path'].replace('.tif', '_and_land_mask_figure.png')
     plt.savefig(save_loc, bbox_inches='tight', dpi=200)
+
 
 
