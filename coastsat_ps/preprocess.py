@@ -59,7 +59,7 @@ def data_extract(settings, outputs):
     else:
         print('Previous run data loaded')
 
-def select_ref_image(settings):
+def select_ref_image(settings, replace_ref_im):
     
     if settings['im_coreg'] != 'Coreg Off':
         # When no georectified image provided, user select suitable toa image
@@ -67,7 +67,10 @@ def select_ref_image(settings):
             settings['georef_im_path'] = os.path.join(settings['run_input_folder'], 
                                                       settings['site_name'] + '_im_ref.tif')
             if os.path.isfile(settings['georef_im_path']):
-                print('Previous reference image loaded')
+                if replace_ref_im:
+                    ref_im_select(settings)
+                else:
+                    print('Previous reference image loaded')
             else:
                 # Select cloud free raw toa image covering entire aoi
                 ref_im_select(settings)
@@ -77,7 +80,9 @@ def select_ref_image(settings):
         # Create land mask
         if not os.path.isfile(settings['land_mask']):
             create_land_mask(settings, settings['georef_im_path'], settings['land_mask'], nan_path = False)
-            # check land mask region is good
+            check_land_mask(settings)
+        elif replace_ref_im:
+            create_land_mask(settings, settings['georef_im_path'], settings['land_mask'], nan_path = False)
             check_land_mask(settings)
     else:
         print('No reference image required for image co-registration = False')
