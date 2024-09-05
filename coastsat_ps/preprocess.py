@@ -111,15 +111,10 @@ def add_ref_features(settings):
 
 
 
-def pre_process(settings, outputs, del_files_int = True, del_no_pass = False, print_no_pass = False):
+def pre_process(settings, outputs, del_files_int = True, del_no_pass = False, print_no_pass = False, rerun_preprocess = False):
     
     # Check if pre-processing run previously
-    if len(os.listdir(settings['merge_out']))>1:
-            
-        # Map folder
-        map_merge(settings, outputs)
-        
-    else:
+    if len(os.listdir(settings['merge_out']))<1 or rerun_preprocess:
         # Time run
         start_time = time.time()
         
@@ -138,6 +133,13 @@ def pre_process(settings, outputs, del_files_int = True, del_no_pass = False, pr
             
         print('\nTotal Pre-Processing run time =',int(runtime), 'seconds', '('+str(round(runtime/60,2))+') minutes\n')
     
+    else:
+        print('\nPre-process run previously, skipping coregistration and merge steps\n')
+
+        # Map folder
+        map_merge(settings, outputs)
+
+
     if del_files_int == True:
         if settings['im_coreg'] != 'Coreg Off':
             if os.path.isdir(settings['coreg_out']):
