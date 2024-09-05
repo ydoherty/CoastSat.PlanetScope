@@ -6,6 +6,10 @@ import datetime
 import numpy as np
 from osgeo import gdal
 from sklearn.externals import joblib
+import json
+from shapely.geometry import shape
+from shapely.ops import transform
+from pyproj import Transformer
 
 from coastsat_ps.preprocess_tools import create_folder
 from coastsat_ps.interactive import transects_from_geojson
@@ -188,7 +192,25 @@ def initialise_settings(settings):
         for key in settings.keys():
             f.write("%s, %s\n" % (key, settings[key]))
 
+    # print AOI area
+    calculate_aoi_area(settings)
+
     return outputs
+
+
+def calculate_aoi_area(settings):
+    # Load the GeoJSON file
+    with open(settings['aoi_geojson'], 'r') as f:
+        geojson_data = json.load(f)
+    # Extract the first feature's geometry
+    polygon = shape(geojson_data['features'][0]['geometry'])
+    # Create a transformer from WGS84 (EPSG:4326) to projected EPSG
+    transformer = Transformer.from_crs("EPSG:4326", settings['output_epsg'], always_xy=True)
+    # Transform the polygon coordinates
+    projected_polygon = transform(transformer.transform, polygon)
+    # Calculate the area
+    area = projected_polygon.area
+    print("AOI is", round(area/(1000*1000),1), 'km^2')
 
 
 def map_downloads(settings):
