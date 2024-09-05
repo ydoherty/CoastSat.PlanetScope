@@ -76,11 +76,12 @@ data_extract(settings, outputs)
 
 #%% 1.2) Pre-processing - Select reference image for co-registration
 
-select_ref_image(settings)
+select_ref_image(settings,
+                 # set as true to replace previously selected ref_im
+                 replace_ref_im = True
+                 )
 
-# If the land mask region is poor, try selecting another reference image:
-#    1) Delete the saved ref_image and mask in ...CoastSat.PlanetScope\outputs\SITENAME\input_data
-#    2) Rerun cell 1.2 and select a different reference image
+# If the land mask region is poor, try selecting another reference image by setting replace_ref_im = True
 
 # If the land mask covers thin land regions (ie barrier islands), try adjusting the following settings:
 #    - reduce min_beach_area (in cell 0)
