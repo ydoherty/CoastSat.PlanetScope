@@ -43,7 +43,7 @@ settings = {
     # Image co-registration choice ['Coreg Off', 'Local Coreg', 'Global Coreg']
     'im_coreg': 'Global Coreg', # refer https://pypi.org/project/arosics/ for details on Local vs Global coreg. Local recommended but slower. 
     # Coregistration land mask - when set to False, a new land mask is calculated for each image (slower but more accurate for large geolocation errors or where the land area changes significantly)
-    settings['generic_land_mask'] = True,
+    'generic_land_mask': True,
 
 
     ### Advanced settings ###
@@ -78,7 +78,7 @@ data_extract(settings, outputs)
 
 select_ref_image(settings,
                  # set as true to replace previously selected ref_im
-                 replace_ref_im = True
+                 replace_ref_im = False
                  )
 
 # If the land mask region is poor, try selecting another reference image by setting replace_ref_im = True
