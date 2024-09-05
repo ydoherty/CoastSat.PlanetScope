@@ -98,7 +98,8 @@ raise Exception('Run cell 1.3 manually')
 # Due to spyder issue, select the below code and press F9 to run rather than running individual cell
 pre_process(settings, outputs, 
         # del_files_int = True will delete intermediate coregistration files to save space
-        del_files_int = True)
+        del_files_int = True,
+        rerun_preprocess = False)
 
 # If coregistration is performing poorly, the following may help:
 #    - try a new reference image
