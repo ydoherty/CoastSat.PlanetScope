@@ -41,7 +41,9 @@ settings = {
         # A new classifier may be re-trained after step 1.3. Refer "...CoastSat.PlanetScope/classifier/train_new_classifier.py" for instructions. 
     'classifier': 'NN_4classes_PS_NARRA.pkl',
     # Image co-registration choice ['Coreg Off', 'Local Coreg', 'Global Coreg']
-    'im_coreg': 'Local Coreg', # refer https://pypi.org/project/arosics/ for details on Local vs Global coreg. Local recommended but slower. 
+    'im_coreg': 'Global Coreg', # refer https://pypi.org/project/arosics/ for details on Local vs Global coreg. Local recommended but slower. 
+    # Coregistration land mask - when set to False, a new land mask is calculated for each image (slower but more accurate for large geolocation errors or where the land area changes significantly)
+    settings['generic_land_mask'] = True,
 
 
     ### Advanced settings ###
@@ -80,8 +82,6 @@ select_ref_image(settings)
 #    1) Delete the saved ref_image and mask in ...CoastSat.PlanetScope\outputs\SITENAME\input_data
 #    2) Rerun cell 1.2 and select a different reference image
 
-# If the land mask is poor in several images, set the generic_land_mask setting to True in data_import.py
-
 # If the land mask covers thin land regions (ie barrier islands), try adjusting the following settings:
 #    - reduce min_beach_area (in cell 0)
 #    - reduce land_mask_smoothing_1 (in data_import.py)
@@ -101,8 +101,8 @@ pre_process(settings, outputs,
 
 # If coregistration is performing poorly, the following may help:
 #    - try a new reference image
-#    - set the 'generic_land_mask' setting to True in data_import.py
 #    - adjust coregistration settings in data_import.py such as tie-point grid size and tie-point window size
+#    - set the 'generic_land_mask' setting to False in data_import.py
 #    - rerun with global coregstration instead of local coregistration
 
 
