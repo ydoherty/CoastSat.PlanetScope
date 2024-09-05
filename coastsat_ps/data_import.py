@@ -31,8 +31,6 @@ def initialise_settings(settings):
     settings['window_size'] = (100,100)
     # Error filtering level (0-3: lower number less likely to fail but less accurate)
     settings['filter_level'] = 2 #3 often fails, bug?
-    # Generic land mask - if False, individual masks extracted (slower but more accurate for large geolocation errors)
-    settings['generic_land_mask'] = False
     # Workaround for arosics inability to coregister images with different CRS. Reprojects all TOA/mask files to output epsg first. 
     settings['arosics_reproject'] = False
     # GDAL warp CRS re-sampling method. 
