@@ -1,7 +1,8 @@
 # CoastSat.PlanetScope
 
-Yarran Doherty, UNSW Water Research Laboratory, 01/2021
+Yarran Doherty, UNSW Water Research Laboratory
 
+First release 01/2021, useability updates 06/2024
 
 ## **Description**
 
