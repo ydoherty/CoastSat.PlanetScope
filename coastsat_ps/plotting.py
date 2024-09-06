@@ -6,16 +6,21 @@ import rasterio
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib import gridspec
-import matplotlib.colors as colors
+import matplotlib.colors as mcolors
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 
 import skimage.morphology as morphology
 
+import json
+from shapely.geometry import shape, LineString
+from shapely.ops import transform
+from pyproj import Transformer
+
 
 #%%
 
-class MidpointNormalize(colors.Normalize):
+class MidpointNormalize(mcolors.Normalize):
     """
     Normalise the colorbar so that diverging bars work there way either side from a prescribed midpoint value)
     e.g. im=ax1.imshow(array, norm=MidpointNormalize(midpoint=0.,vmin=-100, vmax=100))
@@ -23,7 +28,7 @@ class MidpointNormalize(colors.Normalize):
     """
     def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False):
         self.midpoint = midpoint
-        colors.Normalize.__init__(self, vmin, vmax, clip)
+        mcolors.Normalize.__init__(self, vmin, vmax, clip)
 
     def __call__(self, value, clip=None):
         # I'm ignoring masked values and all kinds of edge cases to make a
@@ -400,4 +405,111 @@ def check_land_mask(settings):
     plt.savefig(save_loc, bbox_inches='tight', dpi=200)
 
 
+def plot_inputs(settings):
+
+    # Initialise figure
+    fig, ax = plt.subplots(1, 2, figsize=(15, 5))
+    
+    ##############################
+    # Load the RGB image
+    with rasterio.open(settings['ref_merge_im']) as src_rgb:
+        rgb_image = src_rgb.read([3, 2, 1])  # Read the RGB bands
+        rgb_transform = src_rgb.transform
+    # Normalize the RGB image if necessary
+    if rgb_image.max() > 1.0:
+        rgb_image = rgb_image.astype(float) / rgb_image.max()
+    # Plot the RGB image
+    left, bottom, right, top = rasterio.transform.array_bounds(rgb_image.shape[1], rgb_image.shape[2], rgb_transform)
+    
+    ax[0].set_title('Georectified reference image')
+    ax[0].imshow(np.moveaxis(rgb_image, 0, -1), extent=[left, right, bottom, top], zorder=0)
+    
+    ax[1].set_title('Run inputs')
+    ax[1].imshow(np.moveaxis(rgb_image, 0, -1), extent=[left, right, bottom, top], zorder=0)
+    
+    ##############################
+    # plot transects
+    transects = settings['transects_load']  
+    for i, ts in enumerate(transects):
+        transect_coords = np.array(transects[ts])
+        if i==0:
+            # plot transects
+            ax[1].plot(transect_coords[:, 0], transect_coords[:, 1], color='darkred', lw=1.5, label='Transects', zorder=20)
+        else:
+            # plot transects
+            ax[1].plot(transect_coords[:, 0], transect_coords[:, 1], color='darkred', lw=1.5, zorder=20)
+        # plot transect origin
+        ax[1].scatter(transect_coords[0, 0], transect_coords[0, 1], facecolor='black', edgecolor='white', linewidth=0.5, marker='o', zorder=30)
+
+    ##############################
+    # import ref sl
+    ref_shoreline = np.array(settings['reference_shoreline'])
+    # plot ref sl
+    ax[1].plot(ref_shoreline[:, 0], ref_shoreline[:, 1], color='black', lw=2, linestyle=':', label='Ref SL')
+    # add buffer around ref sl
+    shoreline_buffer = LineString(ref_shoreline).buffer(settings['max_dist_ref'] )  # Create the buffer
+    # Plot the buffered area around the shoreline
+    buffered_patch = mpatches.Polygon(
+        np.array(shoreline_buffer.exterior.coords), 
+        closed=True, 
+        edgecolor='black', 
+        facecolor=mcolors.to_rgba('white', alpha=0.1), 
+        lw=1, 
+        label='Ref SL buffer',
+        zorder=15)
+    ax[1].add_patch(buffered_patch)    
+    
+    ##############################
+    # import aoi
+    with open(settings['aoi_geojson'], 'r') as f:
+        geojson_data = json.load(f)
+    polygon = shape(geojson_data['features'][0]['geometry'])
+    transformer = Transformer.from_crs("EPSG:4326", settings['output_epsg'], always_xy=True)
+    projected_polygon = transform(transformer.transform, polygon)  
+    # plot AOI
+    polygon_patch = mpatches.Polygon(
+        np.array(projected_polygon.exterior.coords), 
+        closed=True, 
+        edgecolor='red', 
+        linestyle='-',
+        facecolor='none', 
+        lw=1.5, 
+        label='AOI',
+        zorder=10)
+    ax[1].add_patch(polygon_patch)
+    
+    ##############################
+    # Get input bounds 
+    shoreline_bounds = shoreline_buffer.bounds 
+    aoi_bounds = projected_polygon.bounds
+    # Get transects bounds
+    transect_bounds = [np.array(transects[ts]).T for ts in transects]  # Extract all coordinates
+    transect_minx = min([coords[0].min() for coords in transect_bounds])
+    transect_maxx = max([coords[0].max() for coords in transect_bounds])
+    transect_miny = min([coords[1].min() for coords in transect_bounds])
+    transect_maxy = max([coords[1].max() for coords in transect_bounds])
+    
+    # Combine all bounds (find the overall min and max for both x and y)
+    minx = min(aoi_bounds[0], shoreline_bounds[0], transect_minx, left)
+    miny = min(aoi_bounds[1], shoreline_bounds[1], transect_miny, bottom)
+    maxx = max(aoi_bounds[2], shoreline_bounds[2], transect_maxx, right)
+    maxy = max(aoi_bounds[3], shoreline_bounds[3], transect_maxy, top)
+    
+    # Set the new limits for the axis
+    padding_x = (maxx - minx) * 0.01
+    padding_y = (maxy - miny) * 0.01
+    for plot in [0, 1]:
+        ax[plot].set_xlim(minx - padding_x, maxx + padding_x)
+        ax[plot].set_ylim(miny - padding_y, maxy + padding_y)
+        ax[plot].axis('off')
+
+    # Plot params
+    # ax[1].legend()
+    ax[1].legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=4)
+    plt.show(block=False)
+    
+    ##############################
+    # save image
+    save_loc = settings['georef_im_path'].replace('im_ref.tif', 'inputs_figure.png')
+    plt.savefig(save_loc, bbox_inches='tight', dpi=200)
 

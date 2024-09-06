@@ -27,19 +27,25 @@ from coastsat_ps.plotting import (initialise_plot, initialise_plot_gen, rgb_plot
 
 #%% Overall shoreline extraction function
 
-def extract_shorelines(outputs, settings, del_index = False, reclassify = False):
+def extract_shorelines(outputs, settings, del_index = False, reclassify = False, rerun_shorelines = False):
 
-    # Extract shoreline crop region and calculate water index
-    batch_index_and_classify(outputs, settings, reclassify = reclassify)
-    index_dict_update(outputs, settings)
-    
-    # Threshold water index images, extract shorelines and plot
-    shorelines = batch_threshold_sl(outputs, settings)
-    
-    if del_index:
-        shutil.rmtree(settings['index_tif_out'])
-        # Create blank folder for later runs
-        pathlib.Path(settings['index_tif_out']).mkdir(exist_ok=True) 
+    if os.path.isfile(settings['sl_pkl_file']) and rerun_shorelines == False:
+        # save outputput structure as output.pkl
+        with open(settings['sl_pkl_file'], 'rb') as f:
+            shorelines = pickle.load(f)
+        print('Previously run shorelines loaded')
+    else:
+        # Extract shoreline crop region and calculate water index
+        batch_index_and_classify(outputs, settings, reclassify = reclassify)
+        index_dict_update(outputs, settings)
+        
+        # Threshold water index images, extract shorelines and plot
+        shorelines = batch_threshold_sl(outputs, settings)
+        
+        if del_index:
+            shutil.rmtree(settings['index_tif_out'])
+            # Create blank folder for later runs
+            pathlib.Path(settings['index_tif_out']).mkdir(exist_ok=True) 
     
     return shorelines
            
@@ -458,6 +464,7 @@ def compute_intersection(shoreline_data, settings):
         csv_out[ts] = col
     
     # Save file
+    csv_out = csv_out.round(2)
     csv_out.to_csv(settings['sl_transect_csv']) 
 
     return csv_out

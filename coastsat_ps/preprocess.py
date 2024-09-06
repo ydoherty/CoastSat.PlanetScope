@@ -19,8 +19,8 @@ from coastsat_ps.preprocess_tools import (save_mask, TOA_conversion, merge_crop,
                                           get_file_extent, get_epsg, 
                                           local_coreg, mask_coreg, global_coreg,
                                           get_raster_bounds, gdal_subprocess, 
-                                          zero_to_nan, load_udm, create_land_mask)
-from coastsat_ps.plotting import check_land_mask
+                                          zero_to_nan, load_udm, create_land_mask, create_folder)
+from coastsat_ps.plotting import check_land_mask, plot_inputs
 
 import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
@@ -86,9 +86,9 @@ def select_ref_image(settings, replace_ref_im):
         print('No reference image required for image co-registration = False')
 
 
-def add_ref_features(settings):
+def add_ref_features(settings, plot=True, redo_features = False):
         
-    if not os.path.isfile(settings['ref_merge_im_txt']):
+    if not os.path.isfile(settings['ref_merge_im_txt']) or redo_features:
         # Select cloud free raw toa image covering entire aoi
         merge_im_select(settings)
     
@@ -98,8 +98,7 @@ def add_ref_features(settings):
                 settings['ref_merge_im'] = text_file.read()
         
     # Digitise reference shoreline
-    get_reference_sl(settings)
-    
+    get_reference_sl(settings, redo_features)
     
     # Import transects
     if settings['transects'] == False:
@@ -108,6 +107,9 @@ def add_ref_features(settings):
         get_transects(settings)
     else:
         print('Transects loaded')
+
+    if plot:
+        plot_inputs(settings)
 
 
 
@@ -119,6 +121,7 @@ def pre_process(settings, outputs, del_files_int = True, del_no_pass = False, pr
         start_time = time.time()
         
         # Map raw folder contents
+        create_folder(settings['coreg_out'])
         map_raw_folder(settings, outputs)
         
         # Co-register images

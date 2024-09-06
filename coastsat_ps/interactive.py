@@ -373,7 +373,7 @@ def merge_im_select(settings):
 
 #%% Ref SL Digitisation
 
-def get_reference_sl(settings):
+def get_reference_sl(settings, redo_features=False):
 
     # unpack settings
     sitename = settings['site_name']
@@ -382,7 +382,7 @@ def get_reference_sl(settings):
     # check if reference shoreline already exists in the corresponding folder
     filename = sitename + '_reference_shoreline.pkl'
     # if it exist, load it and return it
-    if filename in os.listdir(settings['run_input_folder']):
+    if filename in os.listdir(settings['run_input_folder']) and redo_features == False:
         print('Previous reference shoreline loaded')
         settings['reference_shoreline'] = filename
         with open(os.path.join(settings['run_input_folder'], filename), 'rb') as f:

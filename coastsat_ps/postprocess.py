@@ -118,6 +118,7 @@ def tidal_correction(settings, tide_settings, sl_csv):
     plt.savefig(settings['sl_transect_csv'].replace('.csv', '_tide_time_plot.png'), bbox_inches='tight', dpi=300)
 
     # save csv
+    sl_csv_tide = sl_csv_tide.round(2)
     sl_csv_tide.to_csv(settings['sl_transect_csv'].replace('.csv', '_tide_corr.csv'))
     
     return sl_csv_tide
