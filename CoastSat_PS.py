@@ -23,7 +23,6 @@ settings = {
     # Desired output shoreline epsg
     'output_epsg': '28356',
 
-
     ### Reference files (in "...CoastSat.PlanetScope/user_inputs/") ###
     # Area of interest file (save as .kml file from geojson.io website)
     'aoi_kml': 'NARRA_polygon.kml',
@@ -35,7 +34,6 @@ settings = {
     # Local folder planet imagery downloads location (provide full folder path)
     'downloads_folder': '.../USER_PLANET_DOWNLOADS_FOLDER',
 
-
     ### Processing settings ###
     # Machine learning classifier filename (in "...CoastSat.PlanetScope/classifier/models")
         # A new classifier may be re-trained after step 1.3. Refer "...CoastSat.PlanetScope/classifier/train_new_classifier.py" for instructions. 
@@ -44,7 +42,6 @@ settings = {
     'im_coreg': 'Global Coreg', # refer https://pypi.org/project/arosics/ for details on Local vs Global coreg. Local recommended but slower. 
     # Coregistration land mask - when set to False, a new land mask is calculated for each image (slower but more accurate for large geolocation errors or where the land area changes significantly)
     'generic_land_mask': True,
-
 
     ### Advanced settings ###
     # Buffer size around masked cloud pixels [in metres]
@@ -59,9 +56,9 @@ settings = {
     'GDAL_location': '/Users/USER_NAME/.conda/envs/coastsat_ps/bin/',
         # for Windows - Update 'anaconda2' to 'anaconda3' depending on installation version.
         # 'GDAL_location': r'C:\ProgramData\Anaconda3\envs\coastsat_ps\Library\bin',
-    
+
     #### Additional advanced Settings can be found in "...CoastSat.PlanetScope/coastsat_ps/data_import.py"
-    
+
     }
 
 
@@ -78,15 +75,13 @@ data_extract(settings, outputs)
 
 select_ref_image(settings,
                  # set as true to replace previously selected ref_im
-                 replace_ref_im = False
-                 )
+                 replace_ref_im = False)
 
 # If the land mask region is poor, try selecting another reference image by setting replace_ref_im = True
 
 # If the land mask covers thin land regions (ie barrier islands), try adjusting the following settings:
 #    - reduce min_beach_area (in cell 0)
-#    - reduce land_mask_smoothing_1 (in data_import.py)
-#    - reduce land_mask_smoothing_2 (in data_import.py)
+#    - reduce land_mask_smoothing_1 and 2 (in data_import.py)
 
 # If the land mask it still poor, try retraining the classifier for your site to improve pixel classification
 
@@ -99,18 +94,19 @@ raise Exception('Run cell 1.3 manually')
 pre_process(settings, outputs, 
         # del_files_int = True will delete intermediate coregistration files to save space
         del_files_int = True,
+        # set as true to replace previously run preprocessing
         rerun_preprocess = False)
 
 # If coregistration is performing poorly, the following may help:
 #    - try a new reference image
-#    - adjust coregistration settings in data_import.py such as tie-point grid size and tie-point window size
-#    - set the 'generic_land_mask' setting to False in data_import.py
-#    - rerun with global coregstration instead of local coregistration
+#    - reduce tie-point grid size and tie-point window size (in data_import.py)
+#    - adjust the 'generic_land_mask' switch
+#    - adjust the coregistration method (global or local)
 
 
 #%% 2.1) Select georectified/merged image for classification, reference shoreline and transects
 
-add_ref_features(settings)
+add_ref_features(settings, plot = True, redo_features = False)
 
 
 #%% 2.2) Extract shoreline data
@@ -121,7 +117,10 @@ shoreline_data = extract_shorelines(outputs, settings,
                                     
         # del_index = True will delete water index .tif files once used to save space
         del_index = True, 
-        
+
+        # set as true to replace previously extracted shorelines
+        rerun_shorelines = False,
+
         # reclassify = True will reclassify images if they have been classified previously
             # useful when running again with a new classifier
             # use False to save time on re-runs with the same classifier to save processing time
