@@ -114,6 +114,9 @@ The following issues have been identified by users and workarounds are presented
 #### **Environment installation**
 - Environment installation issues and package conflicts - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-830543064). Seems to be resolved for both mac and windows. Unexpected installation issues may still persist so alternate installation environments are provided in the event the standard file does not work.
 
+#### **Spyder crashing after opening**
+- Spyder does not play well with complex environments. In my experience running "mamba uninstall spyder", then "mamba install spyder" will generally fix the issue. Failing that, the fastest method is usually to remove your environment with "mamba env remove -n coastsat_ps" and try install one of the provided alternate environments such as "environment_alt_AUG_24_explicit.yml". Trying to debug an environment can take hours so its usually much faster to start from scratch.  
+
 #### **General**
 - If the toolbox repeatedly crashes on an individual image, inspect the file in GIS software to ensure there are no issues with the image. For impacted images, the easiest workaround is to delete the image (and all assoicated files) from the downloads folder and re-run the toolbox. 
 - To remove all files created by the toolbox in order to start fresh, simply delete the CoastSat.PlanetScope > outputs > RUN_NAME folder.
