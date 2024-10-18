@@ -56,6 +56,7 @@ settings = {
     'GDAL_location': '/Users/USER_NAME/.conda/envs/coastsat_ps/bin/',
         # for Windows - Update 'anaconda2' to 'anaconda3' depending on installation version.
         # 'GDAL_location': r'C:\ProgramData\Anaconda3\envs\coastsat_ps\Library\bin',
+        # coastsat_ps environment folder can be found with mamba using the command "mamba info -e"
 
     #### Additional advanced Settings can be found in "...CoastSat.PlanetScope/coastsat_ps/data_import.py"
 
