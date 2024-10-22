@@ -71,12 +71,15 @@ def create_crop_mask(im_classif, im_ref_buffer, settings):
     # Add buffer to sl edge
     if settings['thin_beach_fix'] == True:
         crop_mask = crop_mask == 0
-        # Adds buffer to sl edge (buffer around sand)
+        # Adds buffer to sl edge (buffer around sand) to allow contouring of back beach/where no sand present
         out_mask = morphology.binary_dilation(crop_mask, morphology.square(5))
         out_mask = morphology.remove_small_objects(out_mask, 
                             min_size=3*9, 
                             connectivity=1)
         out_mask = out_mask == 0
+    else:
+        # buffer 3 pixels inland to prevent contouring on landward side of sand class 
+        out_mask = morphology.binary_dilation(out_mask, morphology.square(3))
 
     # Clean up image (small other removed)
     out_mask = morphology.remove_small_objects(out_mask, 
