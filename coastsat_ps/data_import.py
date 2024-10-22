@@ -62,8 +62,6 @@ def initialise_settings(settings):
     # Generic detection region - if False individual masks are extracted (slower but more accurate sl extraction)
     settings['generic_sl_region'] = False   # Use True for beach w no sand when having issues with classifier
                                             # When true, shoreline is based on a generic crop and otsu and does not use a classified image 
-    # Tweak to sl mask for thin/non-existant beach width
-    settings['thin_beach_fix'] = True
 
 
     ### Transect intersection settings
