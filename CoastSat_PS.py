@@ -1,6 +1,6 @@
 # CoastSat for PlanetScope Dove Imagery
 
-# load coastsat modules
+# load coastsat modules - NOTE - ensure working directory is the coastsat_ps folder
 from coastsat_ps.data_import import initialise_settings
 from coastsat_ps.extract_shoreline import extract_shorelines, compute_intersection
 from coastsat_ps.interactive import filter_shorelines                    
