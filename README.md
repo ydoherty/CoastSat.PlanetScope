@@ -100,7 +100,12 @@ As a starting point for user validation studies, an example jupyter notebook com
 
 ## **Development Opportunities**
 - Currently the Planet provided udm2 useable pixel filter is not supported and a conversion into the old udm format is used. An updated udm2 processing step may improve cloud and sensor error detection. 
-- The PSB.SD sensor type (see [here](https://developers.planet.com/docs/apis/data/sensors)) was released while this project was in its final stages of development. Utilisation of these additional 4 image bands may be an opportunity to further improve shoreline accuracy. 
+- The PSB.SD sensor type (see [here](https://developers.planet.com/docs/apis/data/sensors)) was released while this project was in its final stages of development. Utilisation of these additional 4 image bands may be an opportunity to further improve shoreline accuracy.
+- Integration of existing CoastSat tools:
+  - Automated extraction of FES2022 tide data
+  - Automated integration with CoastSat.Slope
+  - Add an example site vallidation codes
+- Add post processing and mapping/visualisation codes similar to [this](https://ci-folium-web-map.s3.ap-southeast-2.amazonaws.com/UNSW-WRL-CHIS/aus0206_Narrabeen.html). 
 - Additional vallidation and comparison studies:
   - Comparison between the three PlanetScope Dove sensor types (PS2, PS2.SD and PSB.SD)
   - Vallidation and testing at additional sites globally 
