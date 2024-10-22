@@ -42,6 +42,8 @@ settings = {
     'im_coreg': 'Global Coreg', # refer https://pypi.org/project/arosics/ for details on Local vs Global coreg. Local recommended but slower. 
     # Coregistration land mask - when set to False, a new land mask is calculated for each image (slower but more accurate for large geolocation errors or where the land area changes significantly)
     'generic_land_mask': True,
+    # Set as True to keep shorelines along thin/sand-free sections of beach - increases region of allowable shoreline contours
+    'thin_beach_fix': False,
 
     ### Advanced settings ###
     # Buffer size around masked cloud pixels [in metres]
