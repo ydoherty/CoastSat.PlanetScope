@@ -33,7 +33,7 @@ mamba activate coastsat_ps
 spyder
 ```
 
-If installation fails using the default environment.yml, several alternate yaml file options are provided in the alt_environment folder. 
+If installation fails using the default environment.yml, several alternate yaml file options are provided in the alt_environment folder. If you are having issues installing and opening spyder, see further recommendations in the 'Known Issues & Workarounds' section below. 
 
 Once spyder is open, navigate to the CoastSat.PlanetScope folder to set the working direcctory (top right hand box in spyder) and open the CoastSat_PS.py file to begin the example run through. Note that every time you want to run the code, you will need to activate the coastsat_ps environnment and open spyder using the last two lines of code above. 
 
@@ -117,10 +117,10 @@ As a starting point for user validation studies, an example jupyter notebook com
 The following issues have been identified by users and workarounds are presented below. My availability to maintain and update this repo is limited so user feedback, bug fixes and devlopments are encouraged! 
 
 #### **Environment installation**
-- Environment installation issues and package conflicts - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-830543064). Seems to be resolved for both mac and windows. Unexpected installation issues may still persist so alternate installation environments are provided in the event the standard file does not work.
+- Environment installation issues and package conflicts - see [here](https://github.com/ydoherty/CoastSat.PlanetScope/issues/2#issuecomment-830543064). Seems to be resolved for both mac and windows. Unexpected installation issues may still persist so alternate installation environments are provided in the event the standard yaml file does not work. If installation fails for all of the provided yaml files, try edit the default .yml file in a text editor to remove spyder and try again. If you do this you will either have to install spyder seperately, or run CoastSat.PlanetScope from an alternate IDE (ie VSCode). 
 
 #### **Spyder crashing after opening**
-- Spyder does not play well with complex environments. In my experience running "mamba uninstall spyder", then "mamba install spyder" will generally fix the issue. Failing that, the fastest method is usually to remove your environment with "mamba env remove -n coastsat_ps" and try install one of the provided alternate environments such as "environment_alt_AUG_24_explicit.yml". Trying to debug an environment can take hours so its usually much faster to start from scratch.  
+- Spyder does not play well with complex environments. In my experience running "mamba uninstall spyder", then "mamba install spyder" will generally fix the issue. Failing that, the fastest method is usually to remove your environment with "mamba env remove -n coastsat_ps" and try install one of the provided alternate environments such as "environment_alt_AUG_24_explicit.yml". Trying to debug an environment can take hours so its usually much faster to start from scratch. If all else fails and you are unable to resolve your environment and/or open spyder, try install a new environment without spyder (steps outlined in the 'Environment installation' bullet point above). 
 
 #### **General**
 - If the toolbox repeatedly crashes on an individual image, inspect the file in GIS software to ensure there are no issues with the image. For impacted images, the easiest workaround is to delete the image (and all assoicated files) from the downloads folder and re-run the toolbox. 
